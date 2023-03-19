@@ -3,6 +3,7 @@
 Decoder for Codec 8 and Codec 8 Extended formats that are used by certain **Teltonika** devices.
 
 ## Build status
+[![.NET](https://github.com/mcraiha/CSharp-Codec8/actions/workflows/dotnet.yml/badge.svg)](https://github.com/mcraiha/CSharp-Codec8/actions/workflows/dotnet.yml)
 
 ## Nuget
 Not yet

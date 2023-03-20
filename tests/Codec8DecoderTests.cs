@@ -249,4 +249,26 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, ioElement2.eightByteValuesCount);
 		Assert.AreEqual(0, ioElement2.eightByteIdValuePairs.Count);
 	}
+
+	[Test, Description("Invalid inputs")]
+	public void DecodeInvalidCodec8Test()
+	{
+		// Arrange
+		List<(GenericDecodeResult expectedResult, string input)> invalids = new List<(GenericDecodeResult result, string input)>()
+		{
+			(GenericDecodeResult.InputNullOrEmpty, ""),
+			(GenericDecodeResult.OddNumberOfHexValues, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF1"),
+			(GenericDecodeResult.WrongPreamble, "000100000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
+			(GenericDecodeResult.NumberOfDataMismatch, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),
+		};
+
+		// Act
+
+		// Assert
+		foreach (var pair in invalids)
+		{
+			(GenericDecodeResult result, _) = Codec8Decoder.ParseHexadecimalString(pair.input);
+			Assert.AreEqual(pair.expectedResult, result);
+		}
+	}
 }

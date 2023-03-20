@@ -159,17 +159,17 @@ namespace Codec8
 		public byte codecId;
 		public byte numberOfData1; // How many records are included
 		public byte numberOfData2; // How many records are included
-		public byte[] avlDataBytes;
+		public List<byte[]> avlDataBytesList;
 		public byte[] crc16;
 
-		public Codec8Frame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, ReadOnlySpan<byte> avlData, ReadOnlySpan<byte> crc)
+		public Codec8Frame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, List<byte[]> avlData, ReadOnlySpan<byte> crc)
 		{
 			this.preambleBytes = preamble.ToArray();
 			this.dataFieldLengthBytes = dataFieldLength.ToArray();
 			this.codecId = id;
 			this.numberOfData1 = records1;
 			this.numberOfData2 = records2;
-			this.avlDataBytes = avlData.ToArray();
+			this.avlDataBytesList = avlData;
 			this.crc16 = crc.ToArray();
 		}
 
@@ -178,9 +178,15 @@ namespace Codec8
 			return BitConverter.ToUInt32(this.dataFieldLengthBytes);
 		}
 
-		public AvlData GetAvlData()
+		public IReadOnlyList<AvlData> GetAvlDatas()
 		{
-			return new AvlData(avlDataBytes);
+			List<AvlData> returnList = new List<AvlData>();
+			foreach (byte[] bytes in this.avlDataBytesList)
+			{
+				returnList.Add(new AvlData(bytes));
+			}
+
+			return returnList;
 		}
 	}
 
@@ -255,9 +261,13 @@ namespace Codec8
 			byte numberOfData1 = bytes[currentIndex];
 			currentIndex += sizeof(byte);
 
-			AvlData avlData = new AvlData(bytes.Slice(currentIndex));
-			ReadOnlySpan<byte> avlDataBytes = bytes.Slice(currentIndex, avlData.sizeInBytes);
-			currentIndex += avlData.sizeInBytes;
+			List<byte[]> avlDataBytesList = new List<byte[]>();
+			for (byte b = 0; b < numberOfData1; b++)
+			{
+				AvlData avlData = new AvlData(bytes.Slice(currentIndex));
+				avlDataBytesList.Add(bytes.Slice(currentIndex, avlData.sizeInBytes).ToArray());
+				currentIndex += avlData.sizeInBytes;
+			}
 
 			byte numberOfData2 = bytes[currentIndex];
 			currentIndex += sizeof(byte);
@@ -269,7 +279,7 @@ namespace Codec8
 
 			ReadOnlySpan<byte> crcBytes = bytes.Slice(currentIndex, 4);
 			
-			Codec8Frame frame = new Codec8Frame(preambleBytes, dataFieldLengthBytes, codecId, numberOfData1, numberOfData2, avlDataBytes, crcBytes);
+			Codec8Frame frame = new Codec8Frame(preambleBytes, dataFieldLengthBytes, codecId, numberOfData1, numberOfData2, avlDataBytesList, crcBytes);
 
 			return (GenericDecodeResult.SuccessCodec8, frame);
 		}

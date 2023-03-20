@@ -274,7 +274,7 @@ namespace Codec8
 
 			if (numberOfData1 != numberOfData2)
 			{
-				return (GenericDecodeResult.WrongPreamble, $"{numberOfData1} vs. {numberOfData2}");
+				return (GenericDecodeResult.NumberOfDataMismatch, $"Mismatch in number of data values: {numberOfData1} vs. {numberOfData2}");
 			}
 
 			ReadOnlySpan<byte> crcBytes = bytes.Slice(currentIndex, 4);

@@ -2,16 +2,18 @@ using System;
 
 namespace Codec8
 {
-    public enum GenericDecodeResult
+	public enum GenericDecodeResult
 	{
 		SuccessCodec8,
+		SuccessCodec8Extended,
 		InputNullOrEmpty,
 		OddNumberOfHexValues,
 		WrongPreamble,
+		IncorrectCodecId,
 		NumberOfDataMismatch
 	}
 
-    public sealed class GPSElement
+	public sealed class GPSElement
 	{
 		public byte[] longitudeBytes;
 		public byte[] latitudeBytes;

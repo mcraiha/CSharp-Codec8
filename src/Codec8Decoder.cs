@@ -160,7 +160,7 @@ namespace Codec8
 	public static class Codec8Decoder
 	{
 		public const uint preambleExpected = 0;
-		public const byte codec8Id = 8;
+		public const byte codec8Id = 0x08;
 
 		public static readonly HashSet<byte> validPriorities = new HashSet<byte>() { 0, 1, 2 }; 
 
@@ -215,6 +215,11 @@ namespace Codec8
 
 			byte codecId = bytes[currentIndex];
 			currentIndex += sizeof(byte);
+
+			if (codecId != codec8Id)
+			{
+				return (GenericDecodeResult.IncorrectCodecId, $"Expected {codec8Id:X2} as codec ID, but got {codecId:X2} instead");
+			}
 
 			byte numberOfData1 = bytes[currentIndex];
 			currentIndex += sizeof(byte);

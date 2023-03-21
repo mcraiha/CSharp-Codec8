@@ -3,40 +3,7 @@ using System.Collections.Generic;
 
 namespace Codec8
 {
-
-	public sealed class GPSElement
-	{
-		public byte[] longitudeBytes;
-		public byte[] latitudeBytes;
-		public byte[] altitudeBytes;
-		public byte[] angleBytes;
-		public byte visibleSatellites;
-		public byte[] speedBytes;
-
-		public GPSElement(ReadOnlySpan<byte> bytes)
-		{
-			int currentIndex = 0;
-
-			this.longitudeBytes = bytes.Slice(currentIndex, 4).ToArray();
-			currentIndex += 4;
-
-			this.latitudeBytes = bytes.Slice(currentIndex, 4).ToArray();
-			currentIndex += 4;
-
-			this.altitudeBytes = bytes.Slice(currentIndex, 2).ToArray();
-			currentIndex += 2;
-
-			this.angleBytes = bytes.Slice(currentIndex, 2).ToArray();
-			currentIndex += 2;
-
-			this.visibleSatellites = bytes[currentIndex];
-			currentIndex++;
-
-			this.speedBytes = bytes.Slice(currentIndex, 2).ToArray();
-		}
-	}
-
-	public sealed class IOElement
+	public sealed class IOElementCodec8
 	{
 		public byte eventIoId;
 		public byte totalCount;
@@ -55,7 +22,7 @@ namespace Codec8
 
 		public int sizeInBytes;
 
-		public IOElement(ReadOnlySpan<byte> bytes)
+		public IOElementCodec8(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
 
@@ -113,7 +80,7 @@ namespace Codec8
 		}
 	}
 
-	public sealed class AvlData
+	public sealed class AvlDataCodec8
 	{
 		public byte[] timestampBytes;
 		public byte priority;
@@ -121,7 +88,7 @@ namespace Codec8
 		public byte[] ioElementBytes;
 		public int sizeInBytes;
 
-		public AvlData(ReadOnlySpan<byte> bytes)
+		public AvlDataCodec8(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
 
@@ -134,7 +101,7 @@ namespace Codec8
 			this.gpsElementBytes = bytes.Slice(currentIndex, 15).ToArray();
 			currentIndex += 15;
 
-			IOElement ioElement = new IOElement(bytes.Slice(currentIndex));
+			IOElementCodec8 ioElement = new IOElementCodec8(bytes.Slice(currentIndex));
 			this.ioElementBytes = bytes.Slice(currentIndex, ioElement.sizeInBytes).ToArray();
 			currentIndex += ioElement.sizeInBytes;
 
@@ -146,9 +113,9 @@ namespace Codec8
 			return new GPSElement(this.gpsElementBytes);
 		}
 
-		public IOElement GetIOElement()
+		public IOElementCodec8 GetIOElement()
 		{
-			return new IOElement(this.ioElementBytes);
+			return new IOElementCodec8(this.ioElementBytes);
 		}
 	}
 
@@ -178,25 +145,16 @@ namespace Codec8
 			return BitConverter.ToUInt32(this.dataFieldLengthBytes);
 		}
 
-		public IReadOnlyList<AvlData> GetAvlDatas()
+		public IReadOnlyList<AvlDataCodec8> GetAvlDatas()
 		{
-			List<AvlData> returnList = new List<AvlData>();
+			List<AvlDataCodec8> returnList = new List<AvlDataCodec8>();
 			foreach (byte[] bytes in this.avlDataBytesList)
 			{
-				returnList.Add(new AvlData(bytes));
+				returnList.Add(new AvlDataCodec8(bytes));
 			}
 
 			return returnList;
 		}
-	}
-
-	public enum GenericDecodeResult
-	{
-		SuccessCodec8,
-		InputNullOrEmpty,
-		OddNumberOfHexValues,
-		WrongPreamble,
-		NumberOfDataMismatch
 	}
 
 	public static class Codec8Decoder
@@ -264,7 +222,7 @@ namespace Codec8
 			List<byte[]> avlDataBytesList = new List<byte[]>();
 			for (byte b = 0; b < numberOfData1; b++)
 			{
-				AvlData avlData = new AvlData(bytes.Slice(currentIndex));
+				AvlDataCodec8 avlData = new AvlDataCodec8(bytes.Slice(currentIndex));
 				avlDataBytesList.Add(bytes.Slice(currentIndex, avlData.sizeInBytes).ToArray());
 				currentIndex += avlData.sizeInBytes;
 			}

@@ -21,9 +21,9 @@ public class Codec8DecoderTests
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
-		IReadOnlyList<AvlData> avlDatas = frame.GetAvlDatas();
+		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
-		IOElement ioElement = avlDatas[0].GetIOElement();
+		IOElementCodec8 ioElement = avlDatas[0].GetIOElement();
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x36 }, frame.dataFieldLengthBytes);
@@ -94,9 +94,9 @@ public class Codec8DecoderTests
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
-		IReadOnlyList<AvlData> avlDatas = frame.GetAvlDatas();
+		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
-		IOElement ioElement = avlDatas[0].GetIOElement();
+		IOElementCodec8 ioElement = avlDatas[0].GetIOElement();
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x28 }, frame.dataFieldLengthBytes);
@@ -161,13 +161,13 @@ public class Codec8DecoderTests
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
-		IReadOnlyList<AvlData> avlDatas = frame.GetAvlDatas();
+		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
 
 		GPSElement gpsElement1 = avlDatas[0].GetGPSElement();
-		IOElement ioElement1 = avlDatas[0].GetIOElement();
+		IOElementCodec8 ioElement1 = avlDatas[0].GetIOElement();
 
 		GPSElement gpsElement2 = avlDatas[1].GetGPSElement();
-		IOElement ioElement2 = avlDatas[1].GetIOElement();
+		IOElementCodec8 ioElement2 = avlDatas[1].GetIOElement();
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x43 }, frame.dataFieldLengthBytes);

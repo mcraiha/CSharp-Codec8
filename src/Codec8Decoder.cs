@@ -4,25 +4,78 @@ using System.Collections.Generic;
 
 namespace Codec8
 {
+	/// <summary>
+	/// Single IO element of Codec8
+	/// </summary>
 	public sealed class IOElementCodec8
 	{
+		/// <summary>
+		/// Event IO ID – if data is acquired on event – this field defines which IO property has changed and generated an event. For example, when if Ignition state changed and it generate event, Event IO ID will be 0xEF (AVL ID: 239). If it’s not eventual record – the value is 0.
+		/// </summary>
 		public byte eventIoId;
+
+		/// <summary>
+		/// A total number of properties coming with record (N = N1 + N2 + N4 + N8)
+		/// </summary>
 		public byte totalCount;
 
+		/// <summary>
+		/// Number of properties, which length is 1 byte
+		/// </summary>
 		public byte oneByteValuesCount;
+
+		/// <summary>
+		/// All property pairs where value is 1 byte
+		/// </summary>
+		/// <param name="Id">AVL Id</param>
+		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte Value)> oneByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties, which length is 2 bytes
+		/// </summary>
 		public byte twoByteValuesCount;
+
+		/// <summary>
+		/// All property pairs where value is 2 bytes
+		/// </summary>
+		/// <param name="Id">AVL Id</param>
+		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> twoByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties, which length is 4 bytes
+		/// </summary>
 		public byte fourByteValuesCount;
+
+		/// <summary>
+		/// All property pairs where value is 4 bytes
+		/// </summary>
+		/// <param name="Id">AVL Id</param>
+		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> fourByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties, which length is 8 bytes
+		/// </summary>
 		public byte eightByteValuesCount;
+
+		/// <summary>
+		/// All property pairs where value is 8 bytes
+		/// </summary>
+		/// <param name="Id">AVL Id</param>
+		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> eightByteIdValuePairs;
 
+		/// <summary>
+		/// How many bytes the IO element takes
+		/// </summary>
 		public int sizeInBytes;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="bytes">Bytes to turn into IOElementCodec8, all bytes might not be read</param>
 		public IOElementCodec8(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
@@ -81,14 +134,40 @@ namespace Codec8
 		}
 	}
 
+	/// <summary>
+	/// Codec8 AVL Data structure
+	/// </summary>
 	public sealed class AvlDataCodec8
 	{
+		/// <summary>
+		/// Byte array for a difference, in milliseconds, between the current time and midnight, January, 1970 UTC (UNIX time).
+		/// </summary>
 		public byte[] timestampBytes;
+
+		/// <summary>
+		/// Field which define AVL data priority
+		/// </summary>
 		public byte priority;
+
+		/// <summary>
+		/// GPS Element as bytes
+		/// </summary>
 		public byte[] gpsElementBytes;
+
+		/// <summary>
+		/// IO Element as bytes
+		/// </summary>
 		public byte[] ioElementBytes;
+
+		/// <summary>
+		/// How many bytes the AVL Data structure takes
+		/// </summary>
 		public int sizeInBytes;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="bytes">Bytes to turn into AvlDataCodec8, all bytes might not be read</param>
 		public AvlDataCodec8(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
@@ -109,27 +188,75 @@ namespace Codec8
 			this.sizeInBytes = currentIndex;
 		}
 
+		/// <summary>
+		/// Get the GPS Element
+		/// </summary>
+		/// <returns>GPSElement</returns>
 		public GPSElement GetGPSElement()
 		{
 			return new GPSElement(this.gpsElementBytes);
 		}
 
+		/// <summary>
+		/// Gets the IO Element
+		/// </summary>
+		/// <returns>IOElementCodec8</returns>
 		public IOElementCodec8 GetIOElement()
 		{
 			return new IOElementCodec8(this.ioElementBytes);
 		}
 	}
 
+	/// <summary>
+	/// Codec8 frame
+	/// </summary>
 	public sealed class Codec8Frame
 	{
+		/// <summary>
+		/// The packet start bytes, this should ALWAYS be four zero values
+		/// </summary>
 		public byte[] preambleBytes;
+
+		/// <summary>
+		/// Size is calculated starting from Codec ID to Number of Data 2, big-endian four byte array
+		/// </summary>
 		public byte[] dataFieldLengthBytes;
+
+		/// <summary>
+		/// Codec ID, in Codec8 it is always 0x08
+		/// </summary>
 		public byte codecId;
-		public byte numberOfData1; // How many records are included
-		public byte numberOfData2; // How many records are included
+
+		/// <summary>
+		/// A number which defines how many records is in the packet
+		/// </summary>
+		public byte numberOfData1;
+
+		/// <summary>
+		/// A number which defines how many records is in the packet. This number must be the same as “Number of Data 1”
+		/// </summary>
+		public byte numberOfData2;
+
+		/// <summary>
+		/// Actual data in the packet
+		/// </summary>
 		public List<byte[]> avlDataBytesList;
+
+		/// <summary>
+		/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM
+		/// </summary>
 		public byte[] crc16;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="preamble">Preamble as bytes</param>
+		/// <param name="dataFieldLength">Data field length as bytes</param>
+		/// <param name="id">Codec ID as byte</param>
+		/// <param name="records1">Number of records (first)</param>
+		/// <param name="records2">Number of records (second)</param>
+		/// <param name="avlData">AVL data elements as list of bytes</param>
+		/// <param name="crc">CRC as bytes</param>
 		public Codec8Frame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, List<byte[]> avlData, ReadOnlySpan<byte> crc)
 		{
 			this.preambleBytes = preamble.ToArray();
@@ -146,6 +273,10 @@ namespace Codec8
 			return BitConverter.ToUInt32(this.dataFieldLengthBytes);
 		}
 
+		/// <summary>
+		/// Get all AvlDataCodec8 structures
+		/// </summary>
+		/// <returns>List of AvlDataCodec8 structures</returns>
 		public IReadOnlyList<AvlDataCodec8> GetAvlDatas()
 		{
 			List<AvlDataCodec8> returnList = new List<AvlDataCodec8>();
@@ -158,13 +289,32 @@ namespace Codec8
 		}
 	}
 
+	/// <summary>
+	/// Codec8 decoder (static)
+	/// </summary>
 	public static class Codec8Decoder
 	{
+		/// <summary>
+		/// Expected preamble value
+		/// </summary>
 		public const uint preambleExpected = 0;
+
+		/// <summary>
+		/// Expected codec ID
+		/// </summary>
 		public const byte codec8Id = 0x08;
 
+		/// <summary>
+		/// Valid priority values
+		/// </summary>
+		/// <returns></returns>
 		public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
 
+		/// <summary>
+		/// Try to parse Codec8Frame from given hexadecimal string
+		/// </summary>
+		/// <param name="hexadecimal">Hexadecimal input string</param>
+		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8Frame or error string</returns>
 		public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 		{
 			if (string.IsNullOrEmpty(hexadecimal))
@@ -192,6 +342,11 @@ namespace Codec8
 			return ParseByteArray(inputAsBytes);
 		}
 
+		/// <summary>
+		/// Try to parse Codec8Frame from given byte array
+		/// </summary>
+		/// <param name="bytes">Byte array input</param>
+		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8Frame or error string</returns>
 		public static (GenericDecodeResult result, object valueOrError) ParseByteArray(ReadOnlySpan<byte> bytes)
 		{
 			if (bytes.Length < 1)

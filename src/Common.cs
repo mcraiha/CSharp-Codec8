@@ -10,6 +10,7 @@ namespace Codec8
 		OddNumberOfHexValues,
 		WrongPreamble,
 		IncorrectCodecId,
+		IncorrectPriority,
 		NumberOfDataMismatch
 	}
 

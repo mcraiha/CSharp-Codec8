@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Buffers.Binary;
 
@@ -204,7 +205,7 @@ namespace Codec8
 		public const uint preambleExpected = 0;
 		public const byte codec8ExtendedId = 0x8E;
 
-		public static readonly HashSet<byte> validPriorities = new HashSet<byte>() { 0, 1, 2 }; 
+		public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
 
 		public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 		{
@@ -270,6 +271,10 @@ namespace Codec8
 			for (byte b = 0; b < numberOfData1; b++)
 			{
 				AvlDataCodec8Extended avlData = new AvlDataCodec8Extended(bytes.Slice(currentIndex));
+				if (!validPriorities.Contains(avlData.priority))
+				{
+					return (GenericDecodeResult.IncorrectPriority, $"Priority value {avlData.priority} is not valid");
+				}
 				avlDataBytesList.Add(bytes.Slice(currentIndex, avlData.sizeInBytes).ToArray());
 				currentIndex += avlData.sizeInBytes;
 			}

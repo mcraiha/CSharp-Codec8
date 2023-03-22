@@ -4,6 +4,18 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>false</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>LibCodec8</PackageId>
+    <VersionPrefix>0.9.0</VersionPrefix>
+    <VersionSuffix>$(VersionSuffix)</VersionSuffix>
+    <Authors>Kaarlo Räihä</Authors>
+    <Description>Managed C# .NET (.NET 7) library for Codec8 and Codec8 Extended decoding</Description>
+    <IncludeSource>true</IncludeSource>
+    <PackageProjectUrl>https://github.com/mcraiha/CSharp-Codec8</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/mcraiha/CSharp-Codec8.git</RepositoryUrl>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageLicenseExpression>Unlicense</PackageLicenseExpression>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
 </Project>

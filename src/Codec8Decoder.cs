@@ -27,44 +27,36 @@ namespace Codec8
 		/// <summary>
 		/// All property pairs where value is 1 byte
 		/// </summary>
-		/// <param name="Id">AVL Id</param>
-		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte Value)> oneByteIdValuePairs;
 
 		/// <summary>
-		/// Number of properties, which length is 2 bytes
+		/// Number of properties, where value length is 2 bytes
 		/// </summary>
 		public byte twoByteValuesCount;
 
 		/// <summary>
 		/// All property pairs where value is 2 bytes
 		/// </summary>
-		/// <param name="Id">AVL Id</param>
-		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> twoByteIdValuePairs;
 
 		/// <summary>
-		/// Number of properties, which length is 4 bytes
+		/// Number of properties, where value length is 4 bytes
 		/// </summary>
 		public byte fourByteValuesCount;
 
 		/// <summary>
 		/// All property pairs where value is 4 bytes
 		/// </summary>
-		/// <param name="Id">AVL Id</param>
-		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> fourByteIdValuePairs;
 
 		/// <summary>
-		/// Number of properties, which length is 8 bytes
+		/// Number of properties, where value length is 8 bytes
 		/// </summary>
 		public byte eightByteValuesCount;
 
 		/// <summary>
 		/// All property pairs where value is 8 bytes
 		/// </summary>
-		/// <param name="Id">AVL Id</param>
-		/// <param name="Value">AVL Value</param>
 		public List<(byte Id, byte[] Value)> eightByteIdValuePairs;
 
 		/// <summary>
@@ -140,7 +132,7 @@ namespace Codec8
 	public sealed class AvlDataCodec8
 	{
 		/// <summary>
-		/// Byte array for a difference, in milliseconds, between the current time and midnight, January, 1970 UTC (UNIX time).
+		/// Byte array for a difference, in milliseconds, between the current time and midnight, January, 1970 UTC (UNIX time). 8 bytes
 		/// </summary>
 		public byte[] timestampBytes;
 
@@ -150,7 +142,7 @@ namespace Codec8
 		public byte priority;
 
 		/// <summary>
-		/// GPS Element as bytes
+		/// GPS Element as bytes. 15 bytes
 		/// </summary>
 		public byte[] gpsElementBytes;
 

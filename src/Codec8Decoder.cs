@@ -230,12 +230,12 @@ namespace Codec8
 		public byte numberOfData2;
 
 		/// <summary>
-		/// Actual data in the packet
+		/// Actual data bytes in the packet
 		/// </summary>
 		public List<byte[]> avlDataBytesList;
 
 		/// <summary>
-		/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM
+		/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM. 4 bytes.
 		/// </summary>
 		public byte[] crc16;
 
@@ -243,7 +243,7 @@ namespace Codec8
 		/// Constructor (only one)
 		/// </summary>
 		/// <param name="preamble">Preamble as bytes</param>
-		/// <param name="dataFieldLength">Data field length as bytes</param>
+		/// <param name="dataFieldLength">Data field length as big-endian bytes</param>
 		/// <param name="id">Codec ID as byte</param>
 		/// <param name="records1">Number of records (first)</param>
 		/// <param name="records2">Number of records (second)</param>

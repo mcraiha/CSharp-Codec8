@@ -6,28 +6,80 @@ using System.Buffers.Binary;
 namespace Codec8
 {
 
+	/// <summary>
+	/// Single IO element of Codec8 Extended
+	/// </summary>
 	public sealed class IOElementCodec8Extended
 	{
+		/// <summary>
+		/// Event IO ID – if data is acquired on event – this field defines which IO property has changed and generated an event. For example, when if Ignition state changed and it generate event, Event IO ID will be 0xEF (AVL ID: 239). If it’s not eventual record – the value is 0.
+		/// </summary>
 		public byte[] eventIoId;
+
+		/// <summary>
+		/// A total number of properties (as big-endian bytes) coming with record (N = N1 + N2 + N4 + N8 + NX)
+		/// </summary>
 		public byte[] totalCount;
 
+		/// <summary>
+		/// Number of properties (as big-endian bytes), where value length is 1 byte
+		/// </summary>
 		public byte[] oneByteValuesCountBytes;
+
+		/// <summary>
+		/// All property pairs where value is 1 byte
+		/// </summary>
 		public List<(byte[] Id, byte Value)> oneByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties (as big-endian bytes), where value length is 2 bytes
+		/// </summary>
 		public byte[] twoByteValuesCountBytes;
+
+		/// <summary>
+		/// All property pairs where value is 2 bytes
+		/// </summary>
 		public List<(byte[] Id, byte[] Value)> twoByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties (as big-endian bytes), where value length is 4 bytes
+		/// </summary>
 		public byte[] fourByteValuesCountBytes;
+
+		/// <summary>
+		/// All property pairs where value is 4 bytes
+		/// </summary>
 		public List<(byte[] Id, byte[] Value)> fourByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties (as big-endian bytes), where value length is 8 bytes
+		/// </summary>
 		public byte[] eightByteValuesCountBytes;
+
+		/// <summary>
+		/// All property pairs where value is 8 bytes
+		/// </summary>
 		public List<(byte[] Id, byte[] Value)> eightByteIdValuePairs;
 
+		/// <summary>
+		/// Number of properties, where value length is X bytes
+		/// </summary>
 		public byte[] xByteValuesCountBytes;
+
+		/// <summary>
+		/// All property pairs where value is X bytes
+		/// </summary>
 		public List<(byte[] Id, byte[] Value)> xByteIdValuePairs;
 
+		/// <summary>
+		/// How many bytes the IO element takes
+		/// </summary>
 		public int sizeInBytes;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="bytes">Bytes to turn into IOElementCodec8Extended, all bytes might not be read</param>
 		public IOElementCodec8Extended(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
@@ -123,14 +175,41 @@ namespace Codec8
 		}
 	}
 
+	/// <summary>
+	/// Codec8 Extended AVL Data structure
+	/// </summary>
 	public sealed class AvlDataCodec8Extended
 	{
+
+		/// <summary>
+		/// Byte array for a difference, in milliseconds, between the current time and midnight, January, 1970 UTC (UNIX time). 8 bytes
+		/// </summary>		
 		public byte[] timestampBytes;
+
+		/// <summary>
+		/// Field which define AVL data priority
+		/// </summary>
 		public byte priority;
+
+		/// <summary>
+		/// GPS Element as bytes. 15 bytes
+		/// </summary>
 		public byte[] gpsElementBytes;
+
+		/// <summary>
+		/// IO Element as bytes
+		/// </summary>
 		public byte[] ioElementBytes;
+
+		/// <summary>
+		/// How many bytes the AVL Data structure takes
+		/// </summary>
 		public int sizeInBytes;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="bytes">Bytes to turn into AvlDataCodec8Extended, all bytes might not be read</param>
 		public AvlDataCodec8Extended(ReadOnlySpan<byte> bytes)
 		{
 			int currentIndex = 0;
@@ -151,27 +230,75 @@ namespace Codec8
 			this.sizeInBytes = currentIndex;
 		}
 
+		/// <summary>
+		/// Get the GPS Element
+		/// </summary>
+		/// <returns>GPSElement</returns>
 		public GPSElement GetGPSElement()
 		{
 			return new GPSElement(this.gpsElementBytes);
 		}
 
+		/// <summary>
+		/// Gets the IO Element
+		/// </summary>
+		/// <returns>IOElementCodec8Extended</returns>
 		public IOElementCodec8Extended GetIOElement()
 		{
 			return new IOElementCodec8Extended(this.ioElementBytes);
 		}
 	}
 
+	/// <summary>
+	/// Codec8 Extended frame
+	/// </summary>
 	public sealed class Codec8ExtendedFrame
 	{
+		/// <summary>
+		/// The packet start bytes, this should ALWAYS be four zero values
+		/// </summary>
 		public byte[] preambleBytes;
+
+		/// <summary>
+		/// Size is calculated starting from Codec ID to Number of Data 2, big-endian four byte array
+		/// </summary>
 		public byte[] dataFieldLengthBytes;
+
+		/// <summary>
+		/// Codec ID, in Codec8 Extended it is always 0x8E
+		/// </summary>
 		public byte codecId;
-		public byte numberOfData1; // How many records are included
-		public byte numberOfData2; // How many records are included
+
+		/// <summary>
+		/// A number which defines how many records is in the packet
+		/// </summary>
+		public byte numberOfData1;
+
+		/// <summary>
+		/// A number which defines how many records is in the packet. This number must be the same as “Number of Data 1”
+		/// </summary>
+		public byte numberOfData2;
+
+		/// <summary>
+		/// Actual data bytes in the packet
+		/// </summary>
 		public List<byte[]> avlDataBytesList;
+
+		/// <summary>
+		/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM. 4 bytes.
+		/// </summary>
 		public byte[] crc16;
 
+		/// <summary>
+		/// Constructor (only one)
+		/// </summary>
+		/// <param name="preamble">Preamble as bytes</param>
+		/// <param name="dataFieldLength">Data field length as big-endian bytes</param>
+		/// <param name="id">Codec ID as byte</param>
+		/// <param name="records1">Number of records (first)</param>
+		/// <param name="records2">Number of records (second)</param>
+		/// <param name="avlData">AVL data elements as list of bytes</param>
+		/// <param name="crc">CRC as bytes</param>
 		public Codec8ExtendedFrame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, List<byte[]> avlData, ReadOnlySpan<byte> crc)
 		{
 			this.preambleBytes = preamble.ToArray();
@@ -188,6 +315,10 @@ namespace Codec8
 			return BitConverter.ToUInt32(this.dataFieldLengthBytes);
 		}
 
+		/// <summary>
+		/// Get all AvlDataCodec8Extended structures
+		/// </summary>
+		/// <returns>List of AvlDataCodec8Extended structures</returns>
 		public IReadOnlyList<AvlDataCodec8Extended> GetAvlDatas()
 		{
 			List<AvlDataCodec8Extended> returnList = new List<AvlDataCodec8Extended>();
@@ -200,13 +331,32 @@ namespace Codec8
 		}
 	}
 
+	/// <summary>
+	/// Codec8 Extended decoder (static)
+	/// </summary>
 	public static class Codec8ExtendedDecoder
 	{
+		/// <summary>
+		/// Expected preamble value
+		/// </summary>
 		public const uint preambleExpected = 0;
+
+		/// <summary>
+		/// Expected codec ID
+		/// </summary>
 		public const byte codec8ExtendedId = 0x8E;
 
+		/// <summary>
+		/// Valid priority values
+		/// </summary>
+		/// <returns></returns>
 		public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
 
+		/// <summary>
+		/// Try to parse Codec8ExtendedFrame from given hexadecimal string
+		/// </summary>
+		/// <param name="hexadecimal">Hexadecimal input string</param>
+		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8ExtendedFrame or error string</returns>
 		public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 		{
 			if (string.IsNullOrEmpty(hexadecimal))
@@ -234,6 +384,11 @@ namespace Codec8
 			return ParseByteArray(inputAsBytes);
 		}
 
+		/// <summary>
+		/// Try to parse Codec8ExtendedFrame from given byte array
+		/// </summary>
+		/// <param name="bytes">Byte array input</param>
+		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8ExtendedFrame or error string</returns>
 		public static (GenericDecodeResult result, object valueOrError) ParseByteArray(ReadOnlySpan<byte> bytes)
 		{
 			if (bytes.Length < 1)

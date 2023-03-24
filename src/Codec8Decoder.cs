@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Immutable;
 using System.Collections.Generic;
+using System.Buffers.Binary;
 
 namespace Codec8
 {
@@ -260,9 +261,19 @@ namespace Codec8
 			this.crc16 = crc.ToArray();
 		}
 
+		/// <summary>
+		/// Get data field length
+		/// </summary>
+		/// <returns>How many bytes are between Codec ID and Number Of Data 2</returns>
 		public uint GetDataFieldLength()
 		{
-			return BitConverter.ToUInt32(this.dataFieldLengthBytes);
+			uint returnValue = BitConverter.ToUInt32(this.dataFieldLengthBytes);
+			if (BitConverter.IsLittleEndian)
+			{
+				returnValue = BinaryPrimitives.ReverseEndianness(returnValue);
+			}
+
+			return returnValue;
 		}
 
 		/// <summary>

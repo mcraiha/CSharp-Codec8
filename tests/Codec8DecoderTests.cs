@@ -27,6 +27,7 @@ public class Codec8DecoderTests
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x36 }, frame.dataFieldLengthBytes);
+		Assert.AreEqual(54, frame.GetDataFieldLength());
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 
@@ -100,6 +101,7 @@ public class Codec8DecoderTests
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x28 }, frame.dataFieldLengthBytes);
+		Assert.AreEqual(40, frame.GetDataFieldLength());
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 
@@ -171,6 +173,7 @@ public class Codec8DecoderTests
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x43 }, frame.dataFieldLengthBytes);
+		Assert.AreEqual(67, frame.GetDataFieldLength());
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 

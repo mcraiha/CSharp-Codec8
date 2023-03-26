@@ -421,6 +421,8 @@ namespace Codec8
 			uint dataFieldLength = BitConverter.ToUInt32(dataFieldLengthBytes);
 			currentIndex += sizeof(uint);
 
+			int crcStartOffset = currentIndex;
+
 			byte codecId = bytes[currentIndex];
 			currentIndex += sizeof(byte);
 
@@ -447,12 +449,21 @@ namespace Codec8
 			byte numberOfData2 = bytes[currentIndex];
 			currentIndex += sizeof(byte);
 
+			int crcEndPos = currentIndex;
+
 			if (numberOfData1 != numberOfData2)
 			{
 				return (GenericDecodeResult.NumberOfDataMismatch, $"Mismatch in number of data values: {numberOfData1} vs. {numberOfData2}");
 			}
 
+			ReadOnlySpan<byte> calculateCrcFrom = Crc16.Calculate(bytes.Slice(crcStartOffset, crcEndPos - crcStartOffset));
+
 			ReadOnlySpan<byte> crcBytes = bytes.Slice(currentIndex, 4);
+
+			if (!crcBytes.SequenceEqual(calculateCrcFrom))
+			{
+				return (GenericDecodeResult.CrcMismatch, $"Mismatch in CRC: {BitConverter.ToString(calculateCrcFrom.ToArray()).Replace("-","")} vs. {BitConverter.ToString(crcBytes.ToArray()).Replace("-","")}");
+			}
 			
 			Codec8ExtendedFrame frame = new Codec8ExtendedFrame(preambleBytes, dataFieldLengthBytes, codecId, numberOfData1, numberOfData2, avlDataBytesList, crcBytes);
 

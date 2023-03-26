@@ -18,7 +18,7 @@ public class Codec8DecoderTests
 		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(input);
 
 		// Assert
-		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result, $"Expected success, but got: {valueOrError}");
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
 		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
@@ -92,7 +92,7 @@ public class Codec8DecoderTests
 		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(input);
 
 		// Assert
-		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result, $"Expected success, but got: {valueOrError}");
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
 		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
@@ -160,7 +160,7 @@ public class Codec8DecoderTests
 		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(input);
 
 		// Assert
-		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result);
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result, $"Expected success, but got: {valueOrError}");
 
 		Codec8Frame frame = (Codec8Frame)valueOrError;
 		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();

@@ -18,7 +18,7 @@ public class Codec8ExtendedDecoderTests
 		(GenericDecodeResult result, object valueOrError) = Codec8ExtendedDecoder.ParseHexadecimalString(input);
 
 		// Assert
-		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Extended, result);
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Extended, result, $"Expected success, but got: {valueOrError}");
 
 		Codec8ExtendedFrame frame = (Codec8ExtendedFrame)valueOrError;
 		IReadOnlyList<AvlDataCodec8Extended> avlDatas = frame.GetAvlDatas();

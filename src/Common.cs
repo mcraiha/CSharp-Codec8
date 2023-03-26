@@ -1,4 +1,5 @@
 using System;
+using System.Buffers.Binary;
 
 namespace Codec8
 {
@@ -45,7 +46,12 @@ namespace Codec8
 		/// <summary>
 		/// Decode failed, number of data values don't match
 		/// </summary>
-		NumberOfDataMismatch
+		NumberOfDataMismatch,
+
+		/// <summary>
+		/// Crc values don't match
+		/// </summary>
+		CrcMismatch
 	}
 
 	/// <summary>
@@ -107,6 +113,46 @@ namespace Codec8
 			currentIndex++;
 
 			this.speedBytes = bytes.Slice(currentIndex, 2).ToArray();
+		}
+	}
+
+	/// <summary>
+	/// Static class for calculating CRC16 as defined in https://wiki.teltonika-gps.com/view/Codec#CRC-16
+	/// </summary>
+	public static class Crc16
+	{
+		/// <summary>
+		/// Calcuate Crc16 from given bytes (result is big-endian)
+		/// </summary>
+		/// <param name="bytes">Byte array</param>
+		/// <returns>4 byte value of Crc</returns>
+		public static byte[] Calculate(ReadOnlySpan<byte> bytes)
+		{
+			uint crc = 0;
+
+			for (int i = 0; i < bytes.Length; i++)
+			{
+				crc = crc ^ bytes[i];
+				int bitNumber = 0;
+				
+				while (bitNumber != 8)
+				{
+					uint carry = crc & 1;
+					crc >>= 1;
+					if (carry == 1)
+					{
+						crc = crc ^ 0xA001;
+					}
+					bitNumber++;
+				}	
+			}
+
+			if (BitConverter.IsLittleEndian)
+			{
+				crc = BinaryPrimitives.ReverseEndianness(crc);
+			}
+
+			return BitConverter.GetBytes(crc);
 		}
 	}
 }

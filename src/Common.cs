@@ -117,6 +117,32 @@ namespace Codec8
 	}
 
 	/// <summary>
+	/// Generic decoder, for cases when you do not know the encoding
+	/// </summary>
+	public static class GenericDecoder
+	{
+		/// <summary>
+		/// Try to parse Codec8Frame or Codec8ExtendedFrame from given hexadecimal string
+		/// </summary>
+		/// <param name="hexadecimal">Hexadecimal input string</param>
+		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8Frame, Codec8ExtendedFrame or error string</returns>
+		public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
+		{
+			(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(hexadecimal);
+			if (result == GenericDecodeResult.IncorrectCodecId)
+			{
+				(result, valueOrError) = Codec8ExtendedDecoder.ParseHexadecimalString(hexadecimal);
+				if (result == GenericDecodeResult.SuccessCodec8Extended)
+				{
+					return (result, valueOrError);
+				}
+			}
+
+			return (result, valueOrError);			
+		}
+	}
+
+	/// <summary>
 	/// Static class for calculating CRC16 as defined in https://wiki.teltonika-gps.com/view/Codec#CRC-16
 	/// </summary>
 	public static class Crc16

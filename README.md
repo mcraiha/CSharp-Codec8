@@ -34,6 +34,24 @@ if (result == GenericDecodeResult.SuccessCodec8Extended)
 }
 ```
 
+If you don't know what kind of data you have, you can use generic decoder
+```csharp
+string input = "000000000000004A8E010000016B412CEE000100000000000000000000000000000000010005000100010100010011001D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A00000100002994";
+(GenericDecodeResult result, object valueOrError) = GenericDecoder.ParseHexadecimalString(input);
+if (result == GenericDecodeResult.SuccessCodec8)
+{
+    Codec8Frame frame = (Codec8Frame)valueOrError;
+}
+else if (result == GenericDecodeResult.SuccessCodec8Extended)
+{
+    Codec8ExtendedFrame frame = (Codec8ExtendedFrame)valueOrError;
+}
+else
+{
+    Console.Writeline($"Expected success, but got: {valueOrError}");
+}
+```
+
 ## License
 
 This document and source code files are released into the public domain. See [LICENSE](LICENSE) file

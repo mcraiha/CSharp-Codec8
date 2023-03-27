@@ -37,6 +37,7 @@ public class Codec8ExtendedDecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x29, 0x94 }, frame.crc16);
 
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x41, 0x2C, 0xEE, 0x00 }, avlDatas[0].timestampBytes);
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 11, minute: 36, second: 32, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 

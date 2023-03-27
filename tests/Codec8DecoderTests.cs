@@ -37,6 +37,7 @@ public class Codec8DecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0xC7, 0xCF }, frame.crc16);
 
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD8, 0xEA, 0x30 }, avlDatas[0].timestampBytes);
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 4, second: 46, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
@@ -111,6 +112,7 @@ public class Codec8DecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0xF2, 0x2A }, frame.crc16);
 
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD9, 0xAD, 0x80 }, avlDatas[0].timestampBytes);
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 5, second: 36, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
@@ -185,6 +187,7 @@ public class Codec8DecoderTests
 		// First AVL
 
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0x7B, 0x48 }, avlDatas[0].timestampBytes);
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 1, second: 1, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
@@ -220,6 +223,7 @@ public class Codec8DecoderTests
 		// Second AVL
 
 		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0xC1, 0x98 }, avlDatas[1].timestampBytes);
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 1, second: 19, TimeSpan.Zero), avlDatas[1].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[1].priority);
 

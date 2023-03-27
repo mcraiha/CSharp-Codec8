@@ -182,6 +182,22 @@ namespace Codec8
 		}
 
 		/// <summary>
+		/// Get timestamp as DateTimeOffset
+		/// </summary>
+		/// <returns>DateTimeOffset</returns>
+		public DateTimeOffset GetTimestamp()
+		{
+			ulong totalMilliseconds = BitConverter.ToUInt64(this.timestampBytes);
+
+			if (BitConverter.IsLittleEndian)
+			{
+				totalMilliseconds = BinaryPrimitives.ReverseEndianness(totalMilliseconds);
+			}
+
+			return DateTimeOffset.FromUnixTimeMilliseconds((long)totalMilliseconds);
+		}
+
+		/// <summary>
 		/// Get the GPS Element
 		/// </summary>
 		/// <returns>GPSElement</returns>

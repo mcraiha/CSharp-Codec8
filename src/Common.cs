@@ -34,6 +34,11 @@ namespace Codec8
 		WrongPreamble,
 
 		/// <summary>
+        /// Data Field Length is too big
+        /// </summary>
+		DataFieldLengthTooBig,
+
+		/// <summary>
 		/// Decode failed, incorrect codec id
 		/// </summary>
 		IncorrectCodecId,

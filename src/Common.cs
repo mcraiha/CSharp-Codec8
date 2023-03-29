@@ -34,8 +34,8 @@ namespace Codec8
 		WrongPreamble,
 
 		/// <summary>
-        /// Data Field Length is too big
-        /// </summary>
+		/// Data Field Length is too big
+		/// </summary>
 		DataFieldLengthTooBig,
 
 		/// <summary>
@@ -118,6 +118,69 @@ namespace Codec8
 			currentIndex++;
 
 			this.speedBytes = bytes.Slice(currentIndex, 2).ToArray();
+		}
+
+		/// <summary>
+		/// Is GPS data valid, only invalid value is speed == 0x0000
+		/// </summary>
+		/// <returns>True if it is; False otherwise</returns>
+		public bool IsGPSValid()
+		{
+			return speedBytes[0] != 0 || speedBytes[1] != 0;
+		}
+
+		/// <summary>
+		/// Get longitude
+		/// </summary>
+		/// <returns>Longitude as int</returns>
+		public int GetLongitude()
+		{
+			return BytesToNumbers.GetInt32(this.longitudeBytes);
+		}
+
+		/// <summary>
+		/// Get latitude
+		/// </summary>
+		/// <returns>Latitude as int</returns>
+		public int GetLatitude()
+		{
+			return BytesToNumbers.GetInt32(this.latitudeBytes);
+		}
+
+		/// <summary>
+		/// Get altitude
+		/// </summary>
+		/// <returns>Altitude as short</returns>
+		public short GetAltitude()
+		{
+			return BytesToNumbers.GetInt16(this.altitudeBytes);
+		}
+
+		/// <summary>
+		/// Get angle
+		/// </summary>
+		/// <returns>Angle as ushort</returns>
+		public ushort GetAngle()
+		{
+			return BytesToNumbers.GetUInt16(this.angleBytes);
+		}
+
+		/// <summary>
+		/// Get speed
+		/// </summary>
+		/// <returns>Speed as ushort</returns>
+		public ushort GetSpeed()
+		{
+			return BytesToNumbers.GetUInt16(this.speedBytes);
+		}
+
+		/// <summary>
+		/// Get values in one string
+		/// </summary>
+		/// <returns>String that contains all values</returns>
+		public override string ToString()
+		{
+			return $"Longitude: {GetLongitude()} Latitude: {GetLatitude()} Altitude: {GetAltitude()} Angle: {GetAngle()} Visible satellites: {this.visibleSatellites} Speed: {GetSpeed()}";
 		}
 	}
 

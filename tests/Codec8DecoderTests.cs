@@ -50,6 +50,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data
 		Assert.AreEqual(1, ioElement.eventIoId);
@@ -125,6 +126,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data
 		Assert.AreEqual(1, ioElement.eventIoId);
@@ -200,6 +202,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, gpsElement1.visibleSatellites);
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement1.speedBytes);
+		Assert.IsFalse(gpsElement1.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data  of first AVL
 		Assert.AreEqual(1, ioElement1.eventIoId);
@@ -236,6 +239,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, gpsElement2.visibleSatellites);
 
 		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement2.speedBytes);
+		Assert.IsFalse(gpsElement2.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data  of first AVL
 		Assert.AreEqual(1, ioElement2.eventIoId);
@@ -266,6 +270,7 @@ public class Codec8DecoderTests
 			(GenericDecodeResult.InputNullOrEmpty, ""),
 			(GenericDecodeResult.OddNumberOfHexValues, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF1"),
 			(GenericDecodeResult.WrongPreamble, "000100000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
+			(GenericDecodeResult.DataFieldLengthTooBig, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7"),
 			(GenericDecodeResult.IncorrectCodecId, "000000000000003609010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
 			(GenericDecodeResult.IncorrectPriority, "000000000000003608010000016B40D8EA30030000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
 			(GenericDecodeResult.NumberOfDataMismatch, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),

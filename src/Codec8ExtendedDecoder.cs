@@ -435,7 +435,19 @@ namespace Codec8
 
 			ReadOnlySpan<byte> dataFieldLengthBytes = bytes.Slice(currentIndex, sizeof(uint));
 			uint dataFieldLength = BitConverter.ToUInt32(dataFieldLengthBytes);
+			if (BitConverter.IsLittleEndian)
+			{
+				dataFieldLength = BinaryPrimitives.ReverseEndianness(dataFieldLength);
+			}
+
 			currentIndex += sizeof(uint);
+
+			//Console.WriteLine($"{currentIndex + dataFieldLength + 4} {bytes.Length}");
+
+			if (currentIndex + dataFieldLength + 4 > bytes.Length)
+			{
+				return (GenericDecodeResult.DataFieldLengthTooBig, $"Datafield says there should be {dataFieldLength} bytes, but not that many bytes exist");
+			}
 
 			int crcStartOffset = currentIndex;
 

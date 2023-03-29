@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Buffers.Binary;
@@ -398,7 +398,7 @@ namespace Codec8
 			if (currentIndex + dataFieldLength + 4 > bytes.Length)
 			{
 				return (GenericDecodeResult.DataFieldLengthTooBig, $"Datafield says there should be {dataFieldLength} bytes, but not that many bytes exist");
-			}	
+			}
 
 			int crcStartOffset = currentIndex;
 

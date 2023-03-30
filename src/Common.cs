@@ -54,6 +54,11 @@ namespace Codec8
 		NumberOfDataMismatch,
 
 		/// <summary>
+		/// Data field amount of bytes do not contain needed amount of data elements 
+		/// </summary>
+		DataFieldLengthAndNumberOfDataMismatch,
+
+		/// <summary>
 		/// Crc values don't match
 		/// </summary>
 		CrcMismatch

@@ -29,6 +29,8 @@ public class Codec8DecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x36 }, frame.dataFieldLengthBytes);
 		Assert.AreEqual(54, frame.GetDataFieldLength());
 
+		Assert.AreEqual(51, avlDatas[0].sizeInBytes, "Only AvlDataCodec8 should be 3 bytes less than data field length");
+
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 
 		Assert.AreEqual(1, frame.numberOfData1);
@@ -104,6 +106,8 @@ public class Codec8DecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x28 }, frame.dataFieldLengthBytes);
 		Assert.AreEqual(40, frame.GetDataFieldLength());
+
+		Assert.AreEqual(37, avlDatas[0].sizeInBytes, "Only AvlDataCodec8 should be 3 bytes less than data field length");
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 
@@ -274,6 +278,7 @@ public class Codec8DecoderTests
 			(GenericDecodeResult.IncorrectCodecId, "000000000000003609010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
 			(GenericDecodeResult.IncorrectPriority, "000000000000003608010000016B40D8EA30030000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
 			(GenericDecodeResult.NumberOfDataMismatch, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),
+			(GenericDecodeResult.DataFieldLengthAndNumberOfDataMismatch, "000000000000003608020000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),
 			(GenericDecodeResult.CrcMismatch, "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7DF"),
 		};
 

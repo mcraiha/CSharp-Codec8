@@ -450,6 +450,7 @@ namespace Codec8
 			}
 
 			int crcStartOffset = currentIndex;
+			int crcEndPos = (int)(currentIndex + dataFieldLength);
 
 			byte codecId = bytes[currentIndex];
 			currentIndex += sizeof(byte);
@@ -463,7 +464,7 @@ namespace Codec8
 			currentIndex += sizeof(byte);
 
 			List<byte[]> avlDataBytesList = new List<byte[]>();
-			for (byte b = 0; b < numberOfData1; b++)
+			while (currentIndex < crcEndPos - 1)
 			{
 				AvlDataCodec8Extended avlData = new AvlDataCodec8Extended(bytes.Slice(currentIndex));
 				if (!validPriorities.Contains(avlData.priority))
@@ -477,11 +478,14 @@ namespace Codec8
 			byte numberOfData2 = bytes[currentIndex];
 			currentIndex += sizeof(byte);
 
-			int crcEndPos = currentIndex;
-
 			if (numberOfData1 != numberOfData2)
 			{
 				return (GenericDecodeResult.NumberOfDataMismatch, $"Mismatch in number of data values: {numberOfData1} vs. {numberOfData2}");
+			}
+
+			if (numberOfData1 != avlDataBytesList.Count)
+			{
+				return (GenericDecodeResult.DataFieldLengthAndNumberOfDataMismatch, $"Cannot find {numberOfData1} elements from given data field that is {dataFieldLength} bytes");
 			}
 
 			ReadOnlySpan<byte> calculateCrcFrom = Crc16.Calculate(bytes.Slice(crcStartOffset, crcEndPos - crcStartOffset));

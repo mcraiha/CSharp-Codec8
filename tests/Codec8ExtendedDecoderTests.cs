@@ -29,6 +29,8 @@ public class Codec8ExtendedDecoderTests
 		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x4A }, frame.dataFieldLengthBytes);
 		Assert.AreEqual(74, frame.GetDataFieldLength());
 
+		Assert.AreEqual(71, avlDatas[0].sizeInBytes, "Only AvlDataCodec8Extended should be 3 bytes less than data field length");
+
 		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
 
 		Assert.AreEqual(1, frame.numberOfData1);

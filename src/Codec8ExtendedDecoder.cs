@@ -93,11 +93,7 @@ namespace Codec8
 			this.oneByteValuesCountBytes = bytes.Slice(currentIndex, 2).ToArray();
 			currentIndex += 2;
 
-			ushort oneByteValuesCount = BitConverter.ToUInt16(this.oneByteValuesCountBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				oneByteValuesCount = BinaryPrimitives.ReverseEndianness(oneByteValuesCount);
-			}
+			ushort oneByteValuesCount = BytesToNumbers.GetUInt16(this.oneByteValuesCountBytes);
 			this.oneByteIdValuePairs = new List<(byte[], byte)>((int)oneByteValuesCount);
 
 			for (int i = 0; i < oneByteValuesCount; i++)
@@ -109,11 +105,7 @@ namespace Codec8
 			this.twoByteValuesCountBytes = bytes.Slice(currentIndex, 2).ToArray();
 			currentIndex += 2;
 
-			ushort twoByteValuesCount = BitConverter.ToUInt16(this.twoByteValuesCountBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				twoByteValuesCount = BinaryPrimitives.ReverseEndianness(twoByteValuesCount);
-			}
+			ushort twoByteValuesCount = BytesToNumbers.GetUInt16(this.twoByteValuesCountBytes);
 			this.twoByteIdValuePairs = new List<(byte[], byte[])>((int)twoByteValuesCount);
 
 			for (int i = 0; i < twoByteValuesCount; i++)
@@ -125,11 +117,7 @@ namespace Codec8
 			this.fourByteValuesCountBytes = bytes.Slice(currentIndex, 2).ToArray();
 			currentIndex += 2;
 
-			ushort fourByteValuesCount = BitConverter.ToUInt16(this.fourByteValuesCountBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				fourByteValuesCount = BinaryPrimitives.ReverseEndianness(fourByteValuesCount);
-			}
+			ushort fourByteValuesCount = BytesToNumbers.GetUInt16(this.fourByteValuesCountBytes);
 			this.fourByteIdValuePairs = new List<(byte[], byte[])>(fourByteValuesCount);
 
 			for (int i = 0; i < fourByteValuesCount; i++)
@@ -141,11 +129,7 @@ namespace Codec8
 			this.eightByteValuesCountBytes = bytes.Slice(currentIndex, 2).ToArray();
 			currentIndex += 2;
 
-			ushort eightByteValuesCount = BitConverter.ToUInt16(this.eightByteValuesCountBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				eightByteValuesCount = BinaryPrimitives.ReverseEndianness(eightByteValuesCount);
-			}
+			ushort eightByteValuesCount = BytesToNumbers.GetUInt16(this.eightByteValuesCountBytes);
 			this.eightByteIdValuePairs = new List<(byte[], byte[])>(eightByteValuesCount);
 
 			for (int i = 0; i < eightByteValuesCount; i++)
@@ -157,16 +141,12 @@ namespace Codec8
 			this.xByteValuesCountBytes = bytes.Slice(currentIndex, 2).ToArray();
 			currentIndex += 2;
 
-			ushort xByteValuesCount = BitConverter.ToUInt16(this.xByteValuesCountBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				xByteValuesCount = BinaryPrimitives.ReverseEndianness(xByteValuesCount);
-			}
+			ushort xByteValuesCount = BytesToNumbers.GetUInt16(this.xByteValuesCountBytes);
 			this.xByteIdValuePairs = new List<(byte[], byte[])>(xByteValuesCount);
 
 			for (int i = 0; i < xByteValuesCount; i++)
 			{
-				ushort xValueLengthInBytes = BitConverter.ToUInt16(bytes.Slice(currentIndex + 2, 2));
+				ushort xValueLengthInBytes = BytesToNumbers.GetUInt16(bytes.Slice(currentIndex + 2, 2));
 				this.xByteIdValuePairs.Add((bytes.Slice(currentIndex, 2).ToArray(), bytes.Slice(currentIndex + 4, xValueLengthInBytes).ToArray()));
 				currentIndex += (4 + xValueLengthInBytes);
 			}
@@ -236,12 +216,7 @@ namespace Codec8
 		/// <returns>DateTimeOffset</returns>
 		public DateTimeOffset GetTimestamp()
 		{
-			ulong totalMilliseconds = BitConverter.ToUInt64(this.timestampBytes);
-
-			if (BitConverter.IsLittleEndian)
-			{
-				totalMilliseconds = BinaryPrimitives.ReverseEndianness(totalMilliseconds);
-			}
+			ulong totalMilliseconds = BytesToNumbers.GetUInt64(this.timestampBytes);
 
 			return DateTimeOffset.FromUnixTimeMilliseconds((long)totalMilliseconds);
 		}
@@ -332,13 +307,7 @@ namespace Codec8
 		/// <returns>How many bytes are between Codec ID and Number Of Data 2</returns>
 		public uint GetDataFieldLength()
 		{
-			uint returnValue = BitConverter.ToUInt32(this.dataFieldLengthBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				returnValue = BinaryPrimitives.ReverseEndianness(returnValue);
-			}
-
-			return returnValue;
+			return BytesToNumbers.GetUInt32(this.dataFieldLengthBytes);
 		}
 
 		/// <summary>
@@ -434,11 +403,7 @@ namespace Codec8
 			}
 
 			ReadOnlySpan<byte> dataFieldLengthBytes = bytes.Slice(currentIndex, sizeof(uint));
-			uint dataFieldLength = BitConverter.ToUInt32(dataFieldLengthBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				dataFieldLength = BinaryPrimitives.ReverseEndianness(dataFieldLength);
-			}
+			uint dataFieldLength = BytesToNumbers.GetUInt32(dataFieldLengthBytes);
 
 			currentIndex += sizeof(uint);
 

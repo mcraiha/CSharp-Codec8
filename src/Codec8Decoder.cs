@@ -187,12 +187,7 @@ namespace Codec8
 		/// <returns>DateTimeOffset</returns>
 		public DateTimeOffset GetTimestamp()
 		{
-			ulong totalMilliseconds = BitConverter.ToUInt64(this.timestampBytes);
-
-			if (BitConverter.IsLittleEndian)
-			{
-				totalMilliseconds = BinaryPrimitives.ReverseEndianness(totalMilliseconds);
-			}
+			ulong totalMilliseconds = BytesToNumbers.GetUInt64(this.timestampBytes);
 
 			return DateTimeOffset.FromUnixTimeMilliseconds((long)totalMilliseconds);
 		}
@@ -283,13 +278,7 @@ namespace Codec8
 		/// <returns>How many bytes are between Codec ID and Number Of Data 2</returns>
 		public uint GetDataFieldLength()
 		{
-			uint returnValue = BitConverter.ToUInt32(this.dataFieldLengthBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				returnValue = BinaryPrimitives.ReverseEndianness(returnValue);
-			}
-
-			return returnValue;
+			return BytesToNumbers.GetUInt32(this.dataFieldLengthBytes);
 		}
 
 		/// <summary>
@@ -385,11 +374,7 @@ namespace Codec8
 			}
 
 			ReadOnlySpan<byte> dataFieldLengthBytes = bytes.Slice(currentIndex, sizeof(uint));
-			uint dataFieldLength = BitConverter.ToUInt32(dataFieldLengthBytes);
-			if (BitConverter.IsLittleEndian)
-			{
-				dataFieldLength = BinaryPrimitives.ReverseEndianness(dataFieldLength);
-			}
+			uint dataFieldLength = BytesToNumbers.GetUInt32(dataFieldLengthBytes);
 
 			currentIndex += sizeof(uint);
 

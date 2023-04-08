@@ -421,7 +421,7 @@ namespace Codec8
 
 			if (numberOfData1 != avlDataBytesList.Count)
 			{
-				return (GenericDecodeResult.DataFieldLengthAndNumberOfDataMismatch, $"Cannot find {numberOfData1} elements from given data field that is {dataFieldLength} bytes");
+				return (GenericDecodeResult.DataFieldLengthAndNumberOfDataMismatch, $"Cannot find {numberOfData1} elements from given data field that is {dataFieldLength} bytes, count is: {avlDataBytesList.Count}");
 			}
 
 			ReadOnlySpan<byte> calculateCrcFrom = Crc16.Calculate(bytes.Slice(crcStartOffset, crcEndPos - crcStartOffset));

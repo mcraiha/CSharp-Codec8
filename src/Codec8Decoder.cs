@@ -321,7 +321,7 @@ namespace Codec8
 		/// <summary>
 		/// Try to parse Codec8Frame from given hexadecimal string
 		/// </summary>
-		/// <param name="hexadecimal">Hexadecimal input string</param>
+		/// <param name="hexadecimal">Hexadecimal input string (e.g. 00000000012 ... or 00-00-00-00-00-12 ..)</param>
 		/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8Frame or error string</returns>
 		public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 		{

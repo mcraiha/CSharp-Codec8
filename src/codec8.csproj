@@ -12,6 +12,7 @@
     <IncludeSource>true</IncludeSource>
     <PackageProjectUrl>https://github.com/mcraiha/CSharp-Codec8</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcraiha/CSharp-Codec8.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <PackageLicenseExpression>Unlicense</PackageLicenseExpression>

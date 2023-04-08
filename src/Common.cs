@@ -24,6 +24,11 @@ namespace Codec8
 		InputNullOrEmpty,
 
 		/// <summary>
+		/// Decode failed, input has non hex value(s)
+		/// </summary>
+		ContainsNonHexValues,
+
+		/// <summary>
 		/// Decode failed, input has odd number of hex values
 		/// </summary>
 		OddNumberOfHexValues,
@@ -212,6 +217,32 @@ namespace Codec8
 			}
 
 			return (result, valueOrError);			
+		}
+	}
+
+	/// <summary>
+	/// Tools for hex encoding / decoding
+	/// </summary>
+	public static class HexTools
+	{
+		/// <summary>
+		/// Check if string contains only hex chars
+		/// </summary>
+		/// <param name="hexadecimal">Hexadecimal string</param>
+		/// <returns>True if it contains; False otherwise</returns>
+		public static bool CheckIfHexOnly(string hexadecimal)
+		{
+			ReadOnlySpan<char> chars = hexadecimal;
+			foreach (char c in chars)
+			{
+				bool isHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+				if (!isHex)
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 

@@ -361,9 +361,14 @@ namespace Codec8
 
 			hexadecimal = hexadecimal.Replace("-", "");
 
+			if (!HexTools.CheckIfHexOnly(hexadecimal))
+			{
+				return (GenericDecodeResult.ContainsNonHexValues, $"Input contains non-hexadecimal value");
+			}
+
 			if (hexadecimal.Length % 2 == 1)
 			{
-				return (GenericDecodeResult.OddNumberOfHexValues, $"Odd number of hex values");
+				return (GenericDecodeResult.OddNumberOfHexValues, $"Input has odd number of hex values");
 			}
 
 			ReadOnlySpan<char> chars = hexadecimal;

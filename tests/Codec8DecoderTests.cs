@@ -265,6 +265,76 @@ public class Codec8DecoderTests
 		Assert.AreEqual(0, ioElement2.eightByteIdValuePairs.Count);
 	}
 
+	
+	[Test, Description("Random input from the internet")]
+	public void DecodeRandomExampleCodec8Test()
+	{
+		// Arrange
+		string input = "00000000000001CB080400000163c803eb02010a2524c01d4a377d00d3012f130032421b0a4503f00150051503ef01510052005900be00c1000ab50008b60006426fd8cd3d1ece605a5400005500007300005a0000c0000007c70000000df1000059d910002d33c65300000000570000000064000000f7bf000000000000000163c803e6e8010a2530781d4a316f00d40131130031421b0a4503f00150051503ef01510052005900be00c1000ab50008b60005426fcbcd3d1ece605a5400005500007300005a0000c0000007c70000000ef1000059d910002d33b95300000000570000000064000000f7bf000000000000000163c803df18010a2536961d4a2e4f00d50134130033421b0a4503f00150051503ef01510052005900be00c1000ab50008b6000542702bcd3d1ece605a5400005500007300005a0000c0000007c70000001ef1000059d910002d33aa5300000000570000000064000000f7bf000000000000000163c8039ce2010a25d8d41d49f42c00dc0123120058421b0a4503f00150051503ef01510052005900be00c1000ab50009b60005427031cd79d8ce605a5400005500007300005a0000c0000007c700000019f1000059d910002d32505300000000570000000064000000f7bf00000000000400003379";
+		
+		// Act
+		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(input);
+		Codec8Frame frame = (Codec8Frame)valueOrError;
+		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
+
+		GPSElement gpsElement1 = avlDatas[0].GetGPSElement();
+		IOElementCodec8 ioElement1 = avlDatas[0].GetIOElement();
+
+		GPSElement gpsElement2 = avlDatas[1].GetGPSElement();
+		IOElementCodec8 ioElement2 = avlDatas[1].GetIOElement();
+
+		// Assert
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result, $"Expected success, but got: {valueOrError}");	
+
+		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
+		CollectionAssert.AreEqual(new byte[] { 0, 0, 0x01, 0xCB }, frame.dataFieldLengthBytes);
+		Assert.AreEqual(459, frame.GetDataFieldLength());
+
+		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
+
+		Assert.AreEqual(4, frame.numberOfData1);
+		Assert.AreEqual(4, frame.numberOfData2);
+
+		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x33, 0x79 }, frame.crc16);
+
+		// First AVL
+
+		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xEB, 0x02 }, avlDatas[0].timestampBytes);
+		Assert.AreEqual(DateTimeOffset.FromUnixTimeMilliseconds(1528069090050), avlDatas[0].GetTimestamp());
+
+		Assert.AreEqual(1, avlDatas[0].priority);
+
+		// GPS element data of first AVL
+		Assert.AreEqual(170206400, gpsElement1.GetLongitude());
+		Assert.AreEqual(491403133, gpsElement1.GetLatitude());
+		Assert.AreEqual(211, gpsElement1.GetAltitude());
+		Assert.AreEqual(303, gpsElement1.GetAngle());
+
+		Assert.AreEqual(19, gpsElement1.visibleSatellites);
+
+		Assert.AreEqual(50, gpsElement1.GetSpeed());
+		Assert.IsTrue(gpsElement1.IsGPSValid(), "GPS value should be valid");
+
+		// IO element data  of first AVL
+		Assert.AreEqual(66, ioElement1.eventIoId);
+		Assert.AreEqual(27, ioElement1.totalCount);
+
+		Assert.AreEqual(10, ioElement1.oneByteValuesCount);
+		Assert.AreEqual(10, ioElement1.oneByteIdValuePairs.Count);
+
+		Assert.AreEqual(69, ioElement1.oneByteIdValuePairs[0].Id);
+		Assert.AreEqual(3, ioElement1.oneByteIdValuePairs[0].Value);
+
+		Assert.AreEqual(10, ioElement1.twoByteValuesCount);
+		Assert.AreEqual(10, ioElement1.twoByteIdValuePairs.Count);
+
+		Assert.AreEqual(7, ioElement1.fourByteValuesCount);
+		Assert.AreEqual(7, ioElement1.fourByteIdValuePairs.Count);
+
+		Assert.AreEqual(0, ioElement1.eightByteValuesCount);
+		Assert.AreEqual(0, ioElement1.eightByteIdValuePairs.Count);
+	}
+
 	[Test, Description("Invalid inputs")]
 	public void DecodeInvalidCodec8Test()
 	{

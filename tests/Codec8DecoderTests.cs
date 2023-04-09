@@ -315,7 +315,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(50, gpsElement1.GetSpeed());
 		Assert.IsTrue(gpsElement1.IsGPSValid(), "GPS value should be valid");
 
-		// IO element data  of first AVL
+		// IO element data of first AVL
 		Assert.AreEqual(66, ioElement1.eventIoId);
 		Assert.AreEqual(27, ioElement1.totalCount);
 
@@ -333,6 +333,44 @@ public class Codec8DecoderTests
 
 		Assert.AreEqual(0, ioElement1.eightByteValuesCount);
 		Assert.AreEqual(0, ioElement1.eightByteIdValuePairs.Count);
+
+
+		// Second AVL
+
+		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xE6, 0xE8 }, avlDatas[1].timestampBytes);
+		Assert.AreEqual(DateTimeOffset.FromUnixTimeMilliseconds(1528069089000), avlDatas[1].GetTimestamp());
+
+		Assert.AreEqual(1, avlDatas[1].priority);
+
+		// GPS element data of second AVL
+		Assert.AreEqual(170209400, gpsElement2.GetLongitude());
+		Assert.AreEqual(491401583, gpsElement2.GetLatitude());
+		Assert.AreEqual(212, gpsElement2.GetAltitude());
+		Assert.AreEqual(305, gpsElement2.GetAngle());
+
+		Assert.AreEqual(19, gpsElement2.visibleSatellites);
+
+		Assert.AreEqual(49, gpsElement2.GetSpeed());
+		Assert.IsTrue(gpsElement2.IsGPSValid(), "GPS value should be valid");
+
+		// IO element data of second AVL
+		Assert.AreEqual(66, ioElement2.eventIoId);
+		Assert.AreEqual(27, ioElement2.totalCount);
+
+		Assert.AreEqual(10, ioElement2.oneByteValuesCount);
+		Assert.AreEqual(10, ioElement2.oneByteIdValuePairs.Count);
+
+		Assert.AreEqual(69, ioElement2.oneByteIdValuePairs[0].Id);
+		Assert.AreEqual(3, ioElement2.oneByteIdValuePairs[0].Value);
+
+		Assert.AreEqual(10, ioElement2.twoByteValuesCount);
+		Assert.AreEqual(10, ioElement2.twoByteIdValuePairs.Count);
+
+		Assert.AreEqual(7, ioElement2.fourByteValuesCount);
+		Assert.AreEqual(7, ioElement2.fourByteIdValuePairs.Count);
+
+		Assert.AreEqual(0, ioElement2.eightByteValuesCount);
+		Assert.AreEqual(0, ioElement2.eightByteIdValuePairs.Count);
 	}
 
 	[Test, Description("Invalid inputs")]

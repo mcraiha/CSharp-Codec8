@@ -252,7 +252,7 @@ namespace Codec8
 	public static class Crc16
 	{
 		/// <summary>
-		/// Calcuate Crc16 from given bytes (result is big-endian)
+		/// Calculate Crc16 from given bytes (result is big-endian)
 		/// </summary>
 		/// <param name="bytes">Byte array</param>
 		/// <returns>4 byte value of Crc</returns>

@@ -363,7 +363,8 @@ namespace Codec8
 
 			if (!HexTools.CheckIfHexOnly(hexadecimal))
 			{
-				return (GenericDecodeResult.ContainsNonHexValues, $"Input contains non-hexadecimal value");
+				int index = HexTools.FindFirstNonHexPos(hexadecimal);
+				return (GenericDecodeResult.ContainsNonHexValues, $"Input contains non-hexadecimal char '{hexadecimal[index]}' at pos {index}");
 			}
 
 			if (hexadecimal.Length % 2 == 1)

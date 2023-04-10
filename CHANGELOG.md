@@ -1,4 +1,4 @@
-## Version 0.9.1 (released)
+## Version 0.9.1 (released 2023-04-10)
 - Library is trimmable
 - Check that string input is hex only
 

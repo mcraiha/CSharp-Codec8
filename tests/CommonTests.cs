@@ -37,4 +37,60 @@ public class GenericDecoderTests
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Extended, result, $"Expected success, but got: {valueOrError}");
 		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
 	}
+
+	[Test, Description("Check that hex detection works correctly")]
+	public void CheckHexTest()
+	{
+		// Arrange
+		string valid1 = "abc0463";
+		string valid2 = "1234567890";
+		string valid3 = "abcdeF";
+
+		string invalid1 = "abcdeFG";
+		string invalid2 = "xabc0463";
+		string invalid3 = "abc0463-";
+
+		// Act
+		bool shouldBeTrue1 = HexTools.CheckIfHexOnly(valid1);
+		bool shouldBeTrue2 = HexTools.CheckIfHexOnly(valid2);
+		bool shouldBeTrue3 = HexTools.CheckIfHexOnly(valid3);
+
+		bool shouldBeFalse1 = HexTools.CheckIfHexOnly(invalid1);
+		bool shouldBeFalse2 = HexTools.CheckIfHexOnly(invalid2);
+		bool shouldBeFalse3 = HexTools.CheckIfHexOnly(invalid3);
+
+		// ASsert
+		Assert.IsTrue(shouldBeTrue1);
+		Assert.IsTrue(shouldBeTrue2);
+		Assert.IsTrue(shouldBeTrue3);
+
+		Assert.IsFalse(shouldBeFalse1);
+		Assert.IsFalse(shouldBeFalse2);
+		Assert.IsFalse(shouldBeFalse3);
+	}
+
+	[Test, Description("Check that find first non hex works correctly")]
+	public void FindFirstNonHexTest()
+	{
+		// Arrange
+		string valid1 = "abc0463";
+
+		string invalid1 = "abcdeFG";
+		string invalid2 = "xabc0463";
+		string invalid3 = "abc0463-";
+
+		// Act
+		int minusOne = HexTools.FindFirstNonHexPos(valid1);
+
+		int index1 = HexTools.FindFirstNonHexPos(invalid1);
+		int index2 = HexTools.FindFirstNonHexPos(invalid2);
+		int index3 = HexTools.FindFirstNonHexPos(invalid3);
+
+		// ASsert
+		Assert.AreEqual(-1, minusOne);
+		
+		Assert.AreEqual(6, index1);
+		Assert.AreEqual(0, index2);
+		Assert.AreEqual(7, index3);
+	}
 }

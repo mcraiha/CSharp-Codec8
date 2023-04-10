@@ -244,6 +244,29 @@ namespace Codec8
 
 			return true;
 		}
+
+		/// <summary>
+		/// Find first index of non hex value
+		/// </summary>
+		/// <param name="hexadecimal">Hexadecimal string</param>
+		/// <returns>Index position, -1 in case all chars are hex chars</returns>
+		public static int FindFirstNonHexPos(string hexadecimal)
+		{
+			ReadOnlySpan<char> chars = hexadecimal;
+			int index = -1;
+			for (int i = 0; i < chars.Length; i++)
+			{
+				char c = chars[i];
+				bool isHex = (c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') || (c >= 'A' && c <= 'F');
+				if (!isHex)
+				{
+					index = i;
+					break;
+				}
+			}
+
+			return index;
+		}
 	}
 
 	/// <summary>

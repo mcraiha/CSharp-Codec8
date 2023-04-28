@@ -271,7 +271,14 @@ public class Codec8DecoderTests
 	{
 		// Arrange
 		string input = "00000000000001CB080400000163c803eb02010a2524c01d4a377d00d3012f130032421b0a4503f00150051503ef01510052005900be00c1000ab50008b60006426fd8cd3d1ece605a5400005500007300005a0000c0000007c70000000df1000059d910002d33c65300000000570000000064000000f7bf000000000000000163c803e6e8010a2530781d4a316f00d40131130031421b0a4503f00150051503ef01510052005900be00c1000ab50008b60005426fcbcd3d1ece605a5400005500007300005a0000c0000007c70000000ef1000059d910002d33b95300000000570000000064000000f7bf000000000000000163c803df18010a2536961d4a2e4f00d50134130033421b0a4503f00150051503ef01510052005900be00c1000ab50008b6000542702bcd3d1ece605a5400005500007300005a0000c0000007c70000001ef1000059d910002d33aa5300000000570000000064000000f7bf000000000000000163c8039ce2010a25d8d41d49f42c00dc0123120058421b0a4503f00150051503ef01510052005900be00c1000ab50009b60005427031cd79d8ce605a5400005500007300005a0000c0000007c700000019f1000059d910002d32505300000000570000000064000000f7bf00000000000400003379";
-		
+
+		string expectedPrettyGeoJSON = """
+		{
+			"type": "Point",
+			"coordinates": [17.02064, 49.140312]
+		}
+		""";
+
 		// Act
 		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(input);
 		Codec8Frame frame = (Codec8Frame)valueOrError;
@@ -306,7 +313,9 @@ public class Codec8DecoderTests
 
 		// GPS element data of first AVL
 		Assert.AreEqual(170206400, gpsElement1.GetLongitude());
+		Assert.AreEqual(17.02064f, gpsElement1.GetLongitudeAngle(), 0.00001);
 		Assert.AreEqual(491403133, gpsElement1.GetLatitude());
+		Assert.AreEqual(49.1403133f, gpsElement1.GetLatitudeAngle(), 0.00001);
 		Assert.AreEqual(211, gpsElement1.GetAltitude());
 		Assert.AreEqual(303, gpsElement1.GetAngle());
 
@@ -314,6 +323,9 @@ public class Codec8DecoderTests
 
 		Assert.AreEqual(50, gpsElement1.GetSpeed());
 		Assert.IsTrue(gpsElement1.IsGPSValid(), "GPS value should be valid");
+
+		Assert.AreEqual("""{"type":"Point","coordinates":[17.02064,49.140312]}""", gpsElement1.GetAsGeoJSONPoint(prettyPrint: false));
+		Assert.AreEqual(expectedPrettyGeoJSON, gpsElement1.GetAsGeoJSONPoint(prettyPrint: true));
 
 		// IO element data of first AVL
 		Assert.AreEqual(66, ioElement1.eventIoId);

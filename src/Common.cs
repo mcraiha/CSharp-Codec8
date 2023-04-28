@@ -140,7 +140,7 @@ namespace Codec8
 		}
 
 		/// <summary>
-		/// Get longitude
+		/// Get unmodified longitude
 		/// </summary>
 		/// <returns>Longitude as int</returns>
 		public int GetLongitude()
@@ -148,13 +148,53 @@ namespace Codec8
 			return BytesToNumbers.GetInt32(this.longitudeBytes);
 		}
 
+		private const float precisionDivider = 10_000_000;
+
 		/// <summary>
-		/// Get latitude
+		/// Get longitude angle
+		/// </summary>
+		/// <returns>Float between -180.0 ... 180.0</returns>
+		public float GetLongitudeAngle()
+		{
+			return GetLongitude() / precisionDivider;
+		}
+
+		/// <summary>
+		/// Get unmodified latitude
 		/// </summary>
 		/// <returns>Latitude as int</returns>
 		public int GetLatitude()
 		{
 			return BytesToNumbers.GetInt32(this.latitudeBytes);
+		}
+
+		/// <summary>
+		/// Get latitude angle
+		/// </summary>
+		/// <returns>Float between -90.0 ... 90.0</returns>
+		public float GetLatitudeAngle()
+		{
+			return GetLatitude() / precisionDivider;
+		}
+
+		/// <summary>
+		/// Get as GeoJSON point
+		/// </summary>
+		/// <param name="prettyPrint">Should the position be pretty printed</param>
+		/// <returns>String containing the GeoJSON point </returns>
+		public string GetAsGeoJSONPoint(bool prettyPrint)
+		{
+			if (prettyPrint)
+			{
+				return $$"""
+				{
+					"type": "Point",
+					"coordinates": [{{GetLongitudeAngle().ToString(System.Globalization.CultureInfo.InvariantCulture)}}, {{GetLatitudeAngle().ToString(System.Globalization.CultureInfo.InvariantCulture)}}]
+				}
+				""";
+			}
+
+			return $$"""{"type":"Point","coordinates":[{{GetLongitudeAngle().ToString(System.Globalization.CultureInfo.InvariantCulture)}},{{GetLatitudeAngle().ToString(System.Globalization.CultureInfo.InvariantCulture)}}]}""";
 		}
 
 		/// <summary>

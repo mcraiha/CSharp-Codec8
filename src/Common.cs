@@ -198,7 +198,7 @@ namespace Codec8
 		}
 
 		/// <summary>
-		/// Get altitude
+		/// Get altitude (meters above sea level)
 		/// </summary>
 		/// <returns>Altitude as short</returns>
 		public short GetAltitude()

@@ -14,7 +14,7 @@ See [Codec 8](https://wiki.teltonika-gps.com/view/Codec#Codec_8) and [Codec 8 Ex
 
 ## How to use
 
-To decode Codec8
+To decode Codec8 (test out in [.NET Fiddle](https://dotnetfiddle.net/8JW4w1))
 ```csharp
 using Codec8;
 
@@ -26,7 +26,7 @@ if (result == GenericDecodeResult.SuccessCodec8)
 }
 ```
 
-To decode Codec8 Extended
+To decode Codec8 Extended (test out in [.NET Fiddle](https://dotnetfiddle.net/fMzrDA))
 ```csharp
 using Codec8;
 

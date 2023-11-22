@@ -1,5 +1,7 @@
 namespace tests;
 
+#pragma warning disable NUnit2002
+#pragma warning disable NUnit2003
 #pragma warning disable NUnit2005
 public class GenericDecoderTests
 {

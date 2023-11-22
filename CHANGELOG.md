@@ -1,3 +1,6 @@
+## Version 0.9.3 (released 2023-11-22)
+- NET 8 release
+
 ## Version 0.9.2 (released 2023-04-30)
 - Add float getters for longitude and latitude
 - Add GeoJSON getter for longitude + latitude point

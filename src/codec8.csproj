@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>false</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsTrimmable>true</IsTrimmable>
@@ -9,7 +9,7 @@
     <VersionPrefix>0.9.3</VersionPrefix>
     <VersionSuffix>$(VersionSuffix)</VersionSuffix>
     <Authors>Kaarlo Räihä</Authors>
-    <Description>Managed C# .NET (.NET 8) library for Codec8 and Codec8 Extended decoding</Description>
+    <Description>Managed C# .NET (.NET 8 and .NET 10) library for Codec8 and Codec8 Extended decoding</Description>
     <IncludeSource>true</IncludeSource>
     <PackageProjectUrl>https://github.com/mcraiha/CSharp-Codec8</PackageProjectUrl>
     <RepositoryUrl>https://github.com/mcraiha/CSharp-Codec8.git</RepositoryUrl>

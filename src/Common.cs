@@ -77,32 +77,32 @@ namespace Codec8
 		/// <summary>
 		/// Longitude as four bytes
 		/// </summary>
-		public byte[] longitudeBytes;
+		public readonly byte[] longitudeBytes;
 
 		/// <summary>
 		/// Latitude as four bytes
 		/// </summary>
-		public byte[] latitudeBytes;
+		public readonly byte[] latitudeBytes;
 
 		/// <summary>
 		/// Altitude as two bytes
 		/// </summary>
-		public byte[] altitudeBytes;
+		public readonly byte[] altitudeBytes;
 
 		/// <summary>
 		/// Angle as two bytes
 		/// </summary>
-		public byte[] angleBytes;
+		public readonly byte[] angleBytes;
 
 		/// <summary>
 		/// Visible satellites amount
 		/// </summary>
-		public byte visibleSatellites;
+		public readonly byte visibleSatellites;
 
 		/// <summary>
 		/// Speed as two bytes
 		/// </summary>
-		public byte[] speedBytes;
+		public readonly byte[] speedBytes;
 
 		/// <summary>
 		/// Constructor (only one)

@@ -14,67 +14,67 @@ namespace Codec8
 		/// <summary>
 		/// Event IO ID – if data is acquired on event – this field defines which IO property has changed and generated an event. For example, when if Ignition state changed and it generate event, Event IO ID will be 0xEF (AVL ID: 239). If it’s not eventual record – the value is 0.
 		/// </summary>
-		public byte[] eventIoId;
+		public readonly byte[] eventIoId;
 
 		/// <summary>
 		/// A total number of properties (as big-endian bytes) coming with record (N = N1 + N2 + N4 + N8 + NX)
 		/// </summary>
-		public byte[] totalCount;
+		public readonly byte[] totalCount;
 
 		/// <summary>
 		/// Number of properties (as big-endian bytes), where value length is 1 byte
 		/// </summary>
-		public byte[] oneByteValuesCountBytes;
+		public readonly byte[] oneByteValuesCountBytes;
 
 		/// <summary>
 		/// All property pairs where value is 1 byte
 		/// </summary>
-		public List<(byte[] Id, byte Value)> oneByteIdValuePairs;
+		public readonly List<(byte[] Id, byte Value)> oneByteIdValuePairs;
 
 		/// <summary>
 		/// Number of properties (as big-endian bytes), where value length is 2 bytes
 		/// </summary>
-		public byte[] twoByteValuesCountBytes;
+		public readonly byte[] twoByteValuesCountBytes;
 
 		/// <summary>
 		/// All property pairs where value is 2 bytes
 		/// </summary>
-		public List<(byte[] Id, byte[] Value)> twoByteIdValuePairs;
+		public readonly List<(byte[] Id, byte[] Value)> twoByteIdValuePairs;
 
 		/// <summary>
 		/// Number of properties (as big-endian bytes), where value length is 4 bytes
 		/// </summary>
-		public byte[] fourByteValuesCountBytes;
+		public readonly byte[] fourByteValuesCountBytes;
 
 		/// <summary>
 		/// All property pairs where value is 4 bytes
 		/// </summary>
-		public List<(byte[] Id, byte[] Value)> fourByteIdValuePairs;
+		public readonly List<(byte[] Id, byte[] Value)> fourByteIdValuePairs;
 
 		/// <summary>
 		/// Number of properties (as big-endian bytes), where value length is 8 bytes
 		/// </summary>
-		public byte[] eightByteValuesCountBytes;
+		public readonly byte[] eightByteValuesCountBytes;
 
 		/// <summary>
 		/// All property pairs where value is 8 bytes
 		/// </summary>
-		public List<(byte[] Id, byte[] Value)> eightByteIdValuePairs;
+		public readonly List<(byte[] Id, byte[] Value)> eightByteIdValuePairs;
 
 		/// <summary>
 		/// Number of properties, where value length is X bytes
 		/// </summary>
-		public byte[] xByteValuesCountBytes;
+		public readonly byte[] xByteValuesCountBytes;
 
 		/// <summary>
 		/// All property pairs where value is X bytes
 		/// </summary>
-		public List<(byte[] Id, byte[] Value)> xByteIdValuePairs;
+		public readonly List<(byte[] Id, byte[] Value)> xByteIdValuePairs;
 
 		/// <summary>
 		/// How many bytes the IO element takes
 		/// </summary>
-		public int sizeInBytes;
+		public readonly int sizeInBytes;
 
 		/// <summary>
 		/// Constructor (only one)
@@ -164,27 +164,27 @@ namespace Codec8
 		/// <summary>
 		/// Byte array for a difference, in milliseconds, between the current time and midnight, January, 1970 UTC (UNIX time). 8 bytes
 		/// </summary>		
-		public byte[] timestampBytes;
+		public readonly byte[] timestampBytes;
 
 		/// <summary>
 		/// Field which define AVL data priority
 		/// </summary>
-		public byte priority;
+		public readonly byte priority;
 
 		/// <summary>
 		/// GPS Element as bytes. 15 bytes
 		/// </summary>
-		public byte[] gpsElementBytes;
+		public readonly byte[] gpsElementBytes;
 
 		/// <summary>
 		/// IO Element as bytes
 		/// </summary>
-		public byte[] ioElementBytes;
+		public readonly byte[] ioElementBytes;
 
 		/// <summary>
 		/// How many bytes the AVL Data structure takes
 		/// </summary>
-		public int sizeInBytes;
+		public readonly int sizeInBytes;
 
 		/// <summary>
 		/// Constructor (only one)
@@ -248,37 +248,37 @@ namespace Codec8
 		/// <summary>
 		/// The packet start bytes, this should ALWAYS be four zero values
 		/// </summary>
-		public byte[] preambleBytes;
+		public readonly byte[] preambleBytes;
 
 		/// <summary>
 		/// Size is calculated starting from Codec ID to Number of Data 2, big-endian four byte array
 		/// </summary>
-		public byte[] dataFieldLengthBytes;
+		public readonly byte[] dataFieldLengthBytes;
 
 		/// <summary>
 		/// Codec ID, in Codec8 Extended it is always 0x8E
 		/// </summary>
-		public byte codecId;
+		public readonly byte codecId;
 
 		/// <summary>
 		/// A number which defines how many records is in the packet
 		/// </summary>
-		public byte numberOfData1;
+		public readonly byte numberOfData1;
 
 		/// <summary>
 		/// A number which defines how many records is in the packet. This number must be the same as “Number of Data 1”
 		/// </summary>
-		public byte numberOfData2;
+		public readonly byte numberOfData2;
 
 		/// <summary>
 		/// Actual data bytes in the packet
 		/// </summary>
-		public List<byte[]> avlDataBytesList;
+		public readonly List<byte[]> avlDataBytesList;
 
 		/// <summary>
 		/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM. 4 bytes.
 		/// </summary>
-		public byte[] crc16;
+		public readonly byte[] crc16;
 
 		/// <summary>
 		/// Constructor (only one)

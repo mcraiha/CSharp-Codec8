@@ -1,5 +1,8 @@
+## Version 1.1.1 (released 2025-11-14)
+- Support .NET 10
+
 ## Version 0.9.3 (released 2023-11-22)
-- NET 8 release
+- .NET 8 release
 
 ## Version 0.9.2 (released 2023-04-30)
 - Add float getters for longitude and latitude

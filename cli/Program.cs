@@ -8,18 +8,19 @@ class Program
 	/// Bold
 	/// </summary>
 	/// <remarks>From https://davidjones.sportronics.com.au/coding/ConsoleTextFormat-Formatting_Console_App_Text-coding.html</remarks>
-	public const string b = "\u001b[1m";
+	private const string b = "\u001b[1m";
 
 	/// <summary>
 	/// Not Bold
 	/// </summary>
-	public const string _b = "\u001b[22m";
+	private const string _b = "\u001b[22m";
 
 	static void Main(string[] args)
 	{
 		if (args.Length < 1)
 		{
 			PrintHelp();
+			return;
 		}
 		
 		foreach (string arg in args)
@@ -33,15 +34,27 @@ class Program
 				Codec8Frame frame = (Codec8Frame)valueOrError;
 				Codec8Mandatory mandatory = new Codec8Mandatory(frame);
 				Console.WriteLine(mandatory.ToString());
+				int recordNumber = 1;
+				foreach (AvlDataCodec8 avlData in frame.GetAvlDatas())
+				{
+					GPSElement gps = avlData.GetGPSElement();
+					IOElementCodec8 ioElement = avlData.GetIOElement();
+					
+					Codec8Avl codec8Avl = new Codec8Avl(avlData, gps, ioElement, recordNumber);
+					Console.WriteLine(codec8Avl.ToString());
+					recordNumber++;
+				}
 			}
 			else if (result == GenericDecodeResult.SuccessCodec8Extended)
 			{
-				Codec8ExtendedFrame frameExtended = (Codec8ExtendedFrame)valueOrError;
-
+				Codec8ExtendedFrame frame = (Codec8ExtendedFrame)valueOrError;
+				Codec8ExtendedMandatory mandatory = new Codec8ExtendedMandatory(frame);
+				Console.WriteLine(mandatory.ToString());
 			}
 			else
 			{
 				string possibleError = (string)valueOrError;
+				Console.WriteLine($"Cannot parse input, error: {possibleError}");
 			}
 		}
 	}

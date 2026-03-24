@@ -31,6 +31,7 @@ public sealed class Codec8Avl
 		sb.AppendLine($"Timestamp\t{Common.GetByteArrayAsSplittedHex(_avlData.timestampBytes, false)}\t{_avlData.GetTimestamp().ToString("o")}");
 		sb.AppendLine($"Priority\t{_avlData.priority.ToString("X2")}\t{_avlData.priority}");
 		sb.AppendLine(new Gps(_gps).ToString());
+		sb.AppendLine(new Codec8IOElement(_ioElement).ToString());
 		return sb.ToString();
 	}
 }

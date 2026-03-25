@@ -50,6 +50,16 @@ class Program
 				Codec8ExtendedFrame frame = (Codec8ExtendedFrame)valueOrError;
 				Codec8ExtendedMandatory mandatory = new Codec8ExtendedMandatory(frame);
 				Console.WriteLine(mandatory.ToString());
+				int recordNumber = 1;
+				foreach (AvlDataCodec8Extended avlData in frame.GetAvlDatas())
+				{
+					GPSElement gps = avlData.GetGPSElement();
+					IOElementCodec8Extended ioElement = avlData.GetIOElement();
+					
+					Codec8ExtendedAvl codec8Avl = new Codec8ExtendedAvl(avlData, gps, ioElement, recordNumber);
+					Console.WriteLine(codec8Avl.ToString());
+					recordNumber++;
+				}
 			}
 			else
 			{

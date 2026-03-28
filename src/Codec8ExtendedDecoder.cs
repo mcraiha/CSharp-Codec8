@@ -240,20 +240,10 @@ public sealed class AvlDataCodec8Extended
 }
 
 /// <summary>
-/// Codec8 Extended frame
+/// Abstract base class for Codec8 Extended frame
 /// </summary>
-public sealed class Codec8ExtendedFrame
+public abstract class Codec8ExtendedFrameBase
 {
-	/// <summary>
-	/// The packet start bytes, this should ALWAYS be four zero values
-	/// </summary>
-	public readonly byte[] preambleBytes;
-
-	/// <summary>
-	/// Size is calculated starting from Codec ID to Number of Data 2, big-endian four byte array
-	/// </summary>
-	public readonly byte[] dataFieldLengthBytes;
-
 	/// <summary>
 	/// Codec ID, in Codec8 Extended it is always 0x8E
 	/// </summary>
@@ -275,38 +265,18 @@ public sealed class Codec8ExtendedFrame
 	public readonly List<byte[]> avlDataBytesList;
 
 	/// <summary>
-	/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM. 4 bytes.
+	/// Only constructor
 	/// </summary>
-	public readonly byte[] crc16;
-
-	/// <summary>
-	/// Constructor (only one)
-	/// </summary>
-	/// <param name="preamble">Preamble as bytes</param>
-	/// <param name="dataFieldLength">Data field length as big-endian bytes</param>
 	/// <param name="id">Codec ID as byte</param>
 	/// <param name="records1">Number of records (first)</param>
 	/// <param name="records2">Number of records (second)</param>
 	/// <param name="avlData">AVL data elements as list of bytes</param>
-	/// <param name="crc">CRC as bytes</param>
-	public Codec8ExtendedFrame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, List<byte[]> avlData, ReadOnlySpan<byte> crc)
+	public Codec8ExtendedFrameBase(byte id, byte records1, byte records2, List<byte[]> avlData)
 	{
-		this.preambleBytes = preamble.ToArray();
-		this.dataFieldLengthBytes = dataFieldLength.ToArray();
 		this.codecId = id;
 		this.numberOfData1 = records1;
 		this.numberOfData2 = records2;
 		this.avlDataBytesList = avlData;
-		this.crc16 = crc.ToArray();
-	}
-
-	/// <summary>
-	/// Get data field length
-	/// </summary>
-	/// <returns>How many bytes are between Codec ID and Number Of Data 2</returns>
-	public uint GetDataFieldLength()
-	{
-		return BytesToNumbers.GetUInt32(this.dataFieldLengthBytes);
 	}
 
 	/// <summary>
@@ -322,6 +292,73 @@ public sealed class Codec8ExtendedFrame
 		}
 
 		return returnList;
+	}
+}
+
+/// <summary>
+/// Codec8 Extended frame with preamble, data field length and CRC16
+/// </summary>
+/// <remarks>For TCP</remarks>
+public sealed class Codec8ExtendedFrame : Codec8ExtendedFrameBase
+{
+	/// <summary>
+	/// The packet start bytes, this should ALWAYS be four zero values
+	/// </summary>
+	public readonly byte[] preambleBytes;
+
+	/// <summary>
+	/// Size is calculated starting from Codec ID to Number of Data 2, big-endian four byte array
+	/// </summary>
+	public readonly byte[] dataFieldLengthBytes;
+
+	/// <summary>
+	/// Calculated from Codec ID to the Second Number of Data. CRC (Cyclic Redundancy Check) is an error-detecting code using for detect accidental changes to RAW data. For calculation we are using CRC-16/IBM. 4 bytes.
+	/// </summary>
+	public readonly byte[] crc16;
+
+	/// <summary>
+	/// Constructor (only one)
+	/// </summary>
+	/// <param name="preamble">Preamble as bytes</param>
+	/// <param name="dataFieldLength">Data field length as big-endian bytes</param>
+	/// <param name="id">Codec ID as byte</param>
+	/// <param name="records1">Number of records (first)</param>
+	/// <param name="records2">Number of records (second)</param>
+	/// <param name="avlData">AVL data elements as list of bytes</param>
+	/// <param name="crc">CRC as bytes</param>
+	public Codec8ExtendedFrame(ReadOnlySpan<byte> preamble, ReadOnlySpan<byte> dataFieldLength, byte id, byte records1, byte records2, List<byte[]> avlData, ReadOnlySpan<byte> crc) : base(id, records1, records2, avlData)
+	{
+		this.preambleBytes = preamble.ToArray();
+		this.dataFieldLengthBytes = dataFieldLength.ToArray();
+		this.crc16 = crc.ToArray();
+	}
+
+	/// <summary>
+	/// Get data field length
+	/// </summary>
+	/// <returns>How many bytes are between Codec ID and Number Of Data 2</returns>
+	public uint GetDataFieldLength()
+	{
+		return BytesToNumbers.GetUInt32(this.dataFieldLengthBytes);
+	}
+}
+
+/// <summary>
+/// Codec8 extended frame without preamble, data field length and CRC16
+/// </summary>
+/// <remarks>For UDP</remarks>
+public sealed class Codec8ExtendedFrameNoCRC : Codec8ExtendedFrameBase
+{
+	/// <summary>
+	/// Constructor (only one)
+	/// </summary>
+	/// <param name="id">Codec ID as byte</param>
+	/// <param name="records1">Number of records (first)</param>
+	/// <param name="records2">Number of records (second)</param>
+	/// <param name="avlData">AVL data elements as list of bytes</param>
+	public Codec8ExtendedFrameNoCRC(byte id, byte records1, byte records2, List<byte[]> avlData) : base(id, records1, records2, avlData)
+	{
+		
 	}
 }
 
@@ -411,8 +448,6 @@ public static class Codec8ExtendedDecoder
 		uint dataFieldLength = BytesToNumbers.GetUInt32(dataFieldLengthBytes);
 
 		currentIndex += sizeof(uint);
-
-		//Console.WriteLine($"{currentIndex + dataFieldLength + 4} {bytes.Length}");
 
 		if (currentIndex + dataFieldLength + 4 > bytes.Length)
 		{

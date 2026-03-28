@@ -6,17 +6,30 @@ namespace Codec8;
 /// <summary>
 /// Generic decode result
 /// </summary>
+/// <remarks>
+/// Do NOT trust on order or values of these because they might change during updates
+/// </remarks>
 public enum GenericDecodeResult
 {
 	/// <summary>
-	/// Decode was success as Codec8
+	/// Decode was success as Codec8 TCP
 	/// </summary>
 	SuccessCodec8,
 
 	/// <summary>
-	/// Decode was success as Codec8 Extended
+	/// Decode was success as Codec8 UDP
+	/// </summary>
+	SuccessCodec8Udp,
+
+	/// <summary>
+	/// Decode was success as Codec8 Extended TCP
 	/// </summary>
 	SuccessCodec8Extended,
+
+	/// <summary>
+	/// Decode was success as Codec8 Extended UDP
+	/// </summary>
+	SuccessCodec8ExtendedUdp,
 
 	/// <summary>
 	/// Decode failed, input is null or empty
@@ -34,9 +47,24 @@ public enum GenericDecodeResult
 	OddNumberOfHexValues,
 
 	/// <summary>
-	/// Decode failed, wrong preamble
+	/// UDP packet length does not match to given data
+	/// </summary>
+	PacketLengthMismatch,
+
+	/// <summary>
+	/// Decode failed, wrong preamble (only for TCP decoding)
 	/// </summary>
 	WrongPreamble,
+
+	/// <summary>
+	/// Incorrect IMEI length
+	/// </summary>
+	WrongImeiLength,
+
+	/// <summary>
+	/// IMEI contains non-number characters
+	/// </summary>
+	ImeiContainsNonNumbers,
 
 	/// <summary>
 	/// Data Field Length is too big

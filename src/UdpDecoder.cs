@@ -115,7 +115,7 @@ public static class Codec8UdpDecoder
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string (e.g. 003DCAFE0105 ... or 00-3D-CA-FE-01-05 ...)</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple or error string</returns>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8FrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 	{
 		if (string.IsNullOrEmpty(hexadecimal))
@@ -153,7 +153,7 @@ public static class Codec8UdpDecoder
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple from given byte array
 	/// </summary>
 	/// <param name="bytes">Byte array input</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple or error string</returns>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8FrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseByteArray(ReadOnlySpan<byte> bytes)
 	{
 		if (bytes.Length < 1)
@@ -246,7 +246,7 @@ public static class Codec8ExtendedUdpDecoder
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple or error string</returns>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8ExtendedFrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 	{
 		if (string.IsNullOrEmpty(hexadecimal))
@@ -284,7 +284,7 @@ public static class Codec8ExtendedUdpDecoder
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple from given byte array
 	/// </summary>
 	/// <param name="bytes">Byte array input</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple or error string</returns>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8ExtendedFrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseByteArray(ReadOnlySpan<byte> bytes)
 	{
 		if (bytes.Length < 1)

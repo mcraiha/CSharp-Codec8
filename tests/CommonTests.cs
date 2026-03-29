@@ -11,7 +11,7 @@ public class GenericDecoderTests
 	}
 
 	[Test, Description("Check that Codec8 decoding works")]
-	public void DecodeCodec8Test()
+	public void DecodeCodec8TcpTest()
 	{
 		// Arrange
 		string input = "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF";
@@ -26,7 +26,7 @@ public class GenericDecoderTests
 	}
 
 	[Test, Description("Check that Codec8 Extended decoding works")]
-	public void DecodeCodec8ExtendedTest()
+	public void DecodeCodec8ExtendedTcpTest()
 	{
 		// Arrange
 		string input = "000000000000004A8E010000016B412CEE000100000000000000000000000000000000010005000100010100010011001D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A00000100002994";
@@ -37,6 +37,36 @@ public class GenericDecoderTests
 
 		// Assert
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Extended, result, $"Expected success, but got: {valueOrError}");
+		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
+	}
+
+	[Test, Description("Check that Codec8 decoding works")]
+	public void DecodeCodec8UdpTest()
+	{
+		// Arrange
+		string input = "003DCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC000001";
+
+		// Act
+		(GenericDecodeResult result, object valueOrError) = GenericDecoder.ParseHexadecimalString(input);
+		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrError;
+
+		// Assert
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Udp, result, $"Expected success, but got: {valueOrError}");
+		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
+	}
+
+	[Test, Description("Check that Codec8 Extended decoding works")]
+	public void DecodeCodec8ExtendedUdpTest()
+	{
+		// Arrange
+		string input = "005FCAFE0107000F3335323039333038363430333635358E010000016B4F831C680100000000000000000000000000000000010005000100010100010011009D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A000001";
+
+		// Act
+		(GenericDecodeResult result, object valueOrError) = GenericDecoder.ParseHexadecimalString(input);
+		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrError;
+
+		// Assert
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8ExtendedUdp, result, $"Expected success, but got: {valueOrError}");
 		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
 	}
 

@@ -271,20 +271,37 @@ public static class GenericDecoder
 	/// Try to parse Codec8Frame or Codec8ExtendedFrame from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either Codec8Frame, Codec8ExtendedFrame or error string</returns>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>Codec8Frame</c>, <c>Codec8ExtendedFrame</c>, <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8ExtendedFrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 	{
-		(GenericDecodeResult result, object valueOrError) = Codec8Decoder.ParseHexadecimalString(hexadecimal);
-		if (result == GenericDecodeResult.IncorrectCodecId)
+		// TCP ones always start with Zero bytes
+		if (hexadecimal.StartsWith("00000000", StringComparison.Ordinal))
 		{
-			(result, valueOrError) = Codec8ExtendedDecoder.ParseHexadecimalString(hexadecimal);
-			if (result == GenericDecodeResult.SuccessCodec8Extended)
+			(GenericDecodeResult resultTCP, object valueOrErrorTCP) = Codec8Decoder.ParseHexadecimalString(hexadecimal);
+			if (resultTCP == GenericDecodeResult.IncorrectCodecId)
 			{
-				return (result, valueOrError);
+				(resultTCP, valueOrErrorTCP) = Codec8ExtendedDecoder.ParseHexadecimalString(hexadecimal);
+				if (resultTCP == GenericDecodeResult.SuccessCodec8Extended)
+				{
+					return (resultTCP, valueOrErrorTCP);
+				}
+			}
+
+			return (resultTCP, valueOrErrorTCP);
+		}
+
+		// Maybe UDP?
+		(GenericDecodeResult resultUDP, object valueOrErrorUDP) = Codec8UdpDecoder.ParseHexadecimalString(hexadecimal);
+		if (resultUDP == GenericDecodeResult.IncorrectCodecId)
+		{
+			(resultUDP, valueOrErrorUDP) = Codec8ExtendedUdpDecoder.ParseHexadecimalString(hexadecimal);
+			if (resultUDP == GenericDecodeResult.SuccessCodec8ExtendedUdp)
+			{
+				return (resultUDP, valueOrErrorUDP);
 			}
 		}
 
-		return (result, valueOrError);			
+		return (resultUDP, valueOrErrorUDP);
 	}
 }
 

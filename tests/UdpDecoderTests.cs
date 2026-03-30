@@ -24,7 +24,7 @@ public class Codec8UdpDecoderTests
 		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrError;
 
 		Assert.AreEqual(61, header.packetLengthInBytes);
-		Assert.AreEqual(65226, header.packetId);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
 		Assert.AreEqual(1, header.notUsableByte);
 
 		Assert.AreEqual(5, avlDataEncapsulated.avlPacketId);
@@ -91,7 +91,7 @@ public class Codec8UdpDecoderTests
 		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrError;
 
 		Assert.AreEqual(484, header.packetLengthInBytes);
-		Assert.AreEqual(65226, header.packetId);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
 		Assert.AreEqual(1, header.notUsableByte);
 
 		Assert.AreEqual(38, avlDataEncapsulated.avlPacketId);
@@ -199,7 +199,7 @@ public class Codec8ExtendedUdpDecoderTests
 		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrError;
 
 		Assert.AreEqual(95, header.packetLengthInBytes);
-		Assert.AreEqual(65226, header.packetId);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
 		Assert.AreEqual(1, header.notUsableByte);
 
 		Assert.AreEqual(7, avlDataEncapsulated.avlPacketId);
@@ -278,7 +278,7 @@ public class Codec8ExtendedUdpDecoderTests
 		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrError;
 
 		Assert.AreEqual(134, header.packetLengthInBytes);
-		Assert.AreEqual(65226, header.packetId);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
 		Assert.AreEqual(1, header.notUsableByte);
 
 		Assert.AreEqual(1, avlDataEncapsulated.avlPacketId);

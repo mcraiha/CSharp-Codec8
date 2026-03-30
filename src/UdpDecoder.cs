@@ -19,7 +19,8 @@ public sealed class UdpChannelHeader
 	/// <summary>
 	/// Packet ID unique for this channel
 	/// </summary>
-	public readonly ushort packetId;
+	/// <remarks>Always 2 bytes</remarks>
+	public readonly byte[] packetId;
 
 	/// <summary>
 	/// Not usable byte
@@ -37,11 +38,21 @@ public sealed class UdpChannelHeader
 		this.packetLengthInBytes = BinaryPrimitives.ReverseEndianness(BitConverter.ToUInt16(bytes.Slice(currentIndex)));
 		currentIndex += 2;
 
-		this.packetId = BitConverter.ToUInt16(bytes.Slice(currentIndex));
+		this.packetId = new byte[2];
+		bytes.Slice(currentIndex, 2).CopyTo(this.packetId);
 		currentIndex += 2;
 	
 		this.notUsableByte = bytes[currentIndex];
 		currentIndex++;
+	}
+
+	/// <summary>
+	/// Get Packet ID as Ushort
+	/// </summary>
+	/// <returns>Packet ID as Ushort</returns>
+	public ushort GetPacketIdAsUshort()
+	{
+		return BitConverter.ToUInt16(this.packetId);
 	}
 }
 

@@ -1,5 +1,6 @@
 ## Version 0.9.5 (not released yet)
 - AOT compatible
+- UDP decoding support
 
 ## Version 0.9.4 (released 2025-11-14)
 - Support .NET 10

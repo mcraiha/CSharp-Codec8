@@ -61,6 +61,38 @@ class Program
 					recordNumber++;
 				}
 			}
+			else if (result == GenericDecodeResult.SuccessCodec8Udp)
+			{
+				(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrError;
+				Codec8UdpMandatory mandatory = new Codec8UdpMandatory(header, avlDataEncapsulated, frame);
+				Console.WriteLine(mandatory.ToString());
+				int recordNumber = 1;
+				foreach (AvlDataCodec8 avlData in frame.GetAvlDatas())
+				{
+					GPSElement gps = avlData.GetGPSElement();
+					IOElementCodec8 ioElement = avlData.GetIOElement();
+					
+					Codec8Avl codec8Avl = new Codec8Avl(avlData, gps, ioElement, recordNumber);
+					Console.WriteLine(codec8Avl.ToString());
+					recordNumber++;
+				}
+			}
+			else if (result == GenericDecodeResult.SuccessCodec8ExtendedUdp)
+			{
+				(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrError;
+				Codec8ExtendedUdpMandatory mandatory = new Codec8ExtendedUdpMandatory(header, avlDataEncapsulated, frame);
+				Console.WriteLine(mandatory.ToString());
+				int recordNumber = 1;
+				foreach (AvlDataCodec8Extended avlData in frame.GetAvlDatas())
+				{
+					GPSElement gps = avlData.GetGPSElement();
+					IOElementCodec8Extended ioElement = avlData.GetIOElement();
+					
+					Codec8ExtendedAvl codec8Avl = new Codec8ExtendedAvl(avlData, gps, ioElement, recordNumber);
+					Console.WriteLine(codec8Avl.ToString());
+					recordNumber++;
+				}
+			}
 			else
 			{
 				string possibleError = (string)valueOrError;

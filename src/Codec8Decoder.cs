@@ -1,7 +1,7 @@
 using System;
-using System.Collections.Immutable;
 using System.Collections.Generic;
 using System.Buffers.Binary;
+using System.Collections.Frozen;
 
 namespace Codec8;
 
@@ -353,7 +353,7 @@ public static class Codec8Decoder
 	/// Valid priority values
 	/// </summary>
 	/// <returns></returns>
-	public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
+	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
 	/// Try to parse Codec8Frame from given hexadecimal string

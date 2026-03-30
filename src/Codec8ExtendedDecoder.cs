@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Buffers.Binary;
 
@@ -381,7 +381,7 @@ public static class Codec8ExtendedDecoder
 	/// Valid priority values
 	/// </summary>
 	/// <returns></returns>
-	public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
+	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
 	/// Try to parse Codec8ExtendedFrame from given hexadecimal string

@@ -1,6 +1,6 @@
 using System;
 using System.Text;
-using System.Collections.Immutable;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Buffers.Binary;
 
@@ -109,7 +109,7 @@ public static class Codec8UdpDecoder
 	/// Valid priority values
 	/// </summary>
 	/// <returns></returns>
-	public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
+	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple from given hexadecimal string
@@ -240,7 +240,7 @@ public static class Codec8ExtendedUdpDecoder
 	/// Valid priority values
 	/// </summary>
 	/// <returns></returns>
-	public static readonly ImmutableHashSet<byte> validPriorities = ImmutableHashSet.Create<byte> ( 0, 1, 2 );
+	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple from given hexadecimal string

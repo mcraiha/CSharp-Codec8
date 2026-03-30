@@ -1,4 +1,4 @@
-## Version 0.9.5 (not released yet)
+## Version 0.9.5 (released 2026-03-30)
 - AOT compatible
 - UDP decoding support
 

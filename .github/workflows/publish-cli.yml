@@ -6,6 +6,7 @@ on:
   push:
      tags:
       - cli-*
+  workflow_dispatch:
 
 jobs:
   buildaots:
@@ -28,7 +29,7 @@ jobs:
       if: matrix.os == 'windows-latest'
       with:
         name: codec8cli-win64
-        path: src/win-x64
+        path: cli/win-x64
         compression-level: 9 # maximum compression
 
     - name: Publish Linux x64
@@ -39,7 +40,7 @@ jobs:
       if: matrix.os == 'ubuntu-latest'
       with:
         name: codec8cli-linux64
-        path: src/linux-x64
+        path: cli/linux-x64
         compression-level: 9 # maximum compression
 
     - name: Publish Mac arm64
@@ -50,6 +51,6 @@ jobs:
       if: matrix.os == 'macos-latest'
       with:
         name: codec8cli-macarm64
-        path: src/osx-arm64
+        path: cli/osx-arm64
         compression-level: 9 # maximum compression
 

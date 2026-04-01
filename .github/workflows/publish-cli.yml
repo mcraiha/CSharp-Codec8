@@ -25,7 +25,7 @@ jobs:
       run: dotnet publish -r win-x64 -c Release -o win-x64
       working-directory: cli
       if: matrix.os == 'windows-latest'
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-latest'
       with:
         name: codec8cli-win64
@@ -36,7 +36,7 @@ jobs:
       run: dotnet publish -r linux-x64 -c Release -o linux-x64
       working-directory: cli
       if: matrix.os == 'ubuntu-latest'
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: matrix.os == 'ubuntu-latest'
       with:
         name: codec8cli-linux64
@@ -47,7 +47,7 @@ jobs:
       run: dotnet publish -r osx-arm64 -c Release -o osx-arm64
       working-directory: cli
       if: matrix.os == 'macos-latest'
-    - uses: actions/upload-artifact@v4
+    - uses: actions/upload-artifact@v6
       if: matrix.os == 'macos-latest'
       with:
         name: codec8cli-macarm64

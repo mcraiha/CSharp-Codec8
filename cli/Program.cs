@@ -1,3 +1,4 @@
+using System.Reflection;
 using Codec8;
 
 namespace Codec8Cli;
@@ -21,6 +22,14 @@ class Program
 		{
 			PrintHelp();
 			return;
+		}
+		else if (args.Length == 1)
+		{
+			if (args[0] == "--version" || args[0] == "-v")
+			{
+				PrintVersion();
+				return;
+			}
 		}
 		
 		foreach (string arg in args)
@@ -103,10 +112,16 @@ class Program
 
 	static void PrintHelp()
 	{
+		PrintVersion();
 		Console.WriteLine("You have to give some parameters for Codec8Cli.");
 		Console.WriteLine("e.g.");
 		Console.WriteLine($"{b}codec8cli 000000000000002808010000016B40D9AD80010000000000000000000000000000000103021503010101425E100000010000F22A{_b}");
 		Console.WriteLine("or");
 		Console.WriteLine($"{b}codec8cli inputfile.txt{_b}");
+	}
+
+	static void PrintVersion()
+	{
+		Console.WriteLine($"Codec8Cli v{Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion}");
 	}
 }

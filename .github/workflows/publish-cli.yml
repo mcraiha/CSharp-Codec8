@@ -15,9 +15,9 @@ jobs:
       matrix:
         os: [windows-latest, macos-latest, ubuntu-latest]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Setup .NET
-      uses: actions/setup-dotnet@v4
+      uses: actions/setup-dotnet@v5
       with:
         dotnet-version: 10.0.x
 
@@ -28,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@v6
       if: matrix.os == 'windows-latest'
       with:
-        name: codec8cli-win64
+        name: codec8cli-win-x64
         path: cli/win-x64
         compression-level: 9 # maximum compression
 
@@ -39,7 +39,7 @@ jobs:
     - uses: actions/upload-artifact@v6
       if: matrix.os == 'ubuntu-latest'
       with:
-        name: codec8cli-linux64
+        name: codec8cli-linux-x64
         path: cli/linux-x64
         compression-level: 9 # maximum compression
 
@@ -50,7 +50,7 @@ jobs:
     - uses: actions/upload-artifact@v6
       if: matrix.os == 'macos-latest'
       with:
-        name: codec8cli-macarm64
+        name: codec8cli-mac-arm64
         path: cli/osx-arm64
         compression-level: 9 # maximum compression
 
@@ -59,14 +59,19 @@ jobs:
     needs: buildaots
     steps:
       - uses: actions/download-artifact@v8
-        with:
-          merge-multiple: true
       - name: Display structure of downloaded files
-        run: ls
+        run: ls -R
+      - name: Zip win-x64
+        run: zip -9 -r -j codec8cli-win-x64.zip codec8cli-win-x64
+      - name: Zip linux-x64
+        run: zip -9 -r -j codec8cli-linux-x64.zip codec8cli-linux-x64
+      - name: Zip mac-arm64
+        run: zip -9 -r -j codec8cli-mac-arm64.zip codec8cli-mac-arm64
       - name: Release
         uses: softprops/action-gh-release@v2
+        if: github.ref_type == 'tag'
         with:
           files: |
-            codec8cli-win64.zip
-            codec8cli-linux64.zip
-            codec8cli-macarm64.zip
+            codec8cli-win-x64.zip
+            codec8cli-linux-x64.zip
+            codec8cli-mac-arm64.zip

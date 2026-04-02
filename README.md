@@ -14,7 +14,7 @@ Decoder for **Codec 8** and **Codec 8 Extended** (TCP and UDP supported) formats
 
 See [Codec 8](https://wiki.teltonika-gps.com/view/Codec#Codec_8) and [Codec 8 Extended](https://wiki.teltonika-gps.com/view/Codec#Codec_8_Extended) wiki
 
-## How to use
+## How to use code
 
 To decode Codec8 TCP (test out in [.NET Fiddle](https://dotnetfiddle.net/8JW4w1))
 ```csharp
@@ -90,6 +90,14 @@ else
 {
     Console.Writeline($"Expected success, but got: {valueOrError}");
 }
+```
+
+## How to use CLI
+
+Just input the hex as parameter, e.g.
+
+```bash
+codec8cli 000000000000002808010000016B40D9AD80010000000000000000000000000000000103021503010101425E100000010000F22A
 ```
 
 ## License

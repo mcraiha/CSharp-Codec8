@@ -62,11 +62,14 @@ jobs:
       - name: Display structure of downloaded files
         run: ls -R
       - name: Zip win-x64
-        run: zip -9 -r -j codec8cli-win-x64.zip codec8cli-win-x64
+        run: zip -9 -r ../codec8cli-win-x64.zip .
+        working-directory: codec8cli-win-x64
       - name: Zip linux-x64
-        run: zip -9 -r -j codec8cli-linux-x64.zip codec8cli-linux-x64
+        run: zip -9 -r ../codec8cli-linux-x64.zip .
+        working-directory: codec8cli-linux-x64
       - name: Zip mac-arm64
-        run: zip -9 -r -j codec8cli-mac-arm64.zip codec8cli-mac-arm64
+        run: zip -9 -r ../codec8cli-mac-arm64.zip .
+        working-directory: codec8cli-mac-arm64
       - name: Release
         uses: softprops/action-gh-release@v2
         if: github.ref_type == 'tag'

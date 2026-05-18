@@ -26,8 +26,8 @@ public class Codec8DecoderTests
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
 		IOElementCodec8 ioElement = avlDatas[0].GetIOElement();
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x36 }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0x36 }));
 		Assert.AreEqual(54, frame.GetDataFieldLength());
 
 		Assert.AreEqual(51, avlDatas[0].sizeInBytes, "Only AvlDataCodec8 should be 3 bytes less than data field length");
@@ -37,22 +37,22 @@ public class Codec8DecoderTests
 		Assert.AreEqual(1, frame.numberOfData1);
 		Assert.AreEqual(1, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0xC7, 0xCF }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0xC7, 0xCF }));
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD8, 0xEA, 0x30 }, avlDatas[0].timestampBytes);
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD8, 0xEA, 0x30 }));
 		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 4, second: 46, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
 		// GPS element data
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.angleBytes);
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.That(gpsElement.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data
@@ -72,19 +72,19 @@ public class Codec8DecoderTests
 		Assert.AreEqual(1, ioElement.twoByteIdValuePairs.Count);
 
 		Assert.AreEqual(0x42, ioElement.twoByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x5E, 0x0F }, ioElement.twoByteIdValuePairs[0].Value);
+		Assert.That(ioElement.twoByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x5E, 0x0F }));
 
 		Assert.AreEqual(1, ioElement.fourByteValuesCount);
 		Assert.AreEqual(1, ioElement.fourByteIdValuePairs.Count);
 
 		Assert.AreEqual(0xF1, ioElement.fourByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x60, 0x1A }, ioElement.fourByteIdValuePairs[0].Value);
+		Assert.That(ioElement.fourByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x00, 0x60, 0x1A }));
 
 		Assert.AreEqual(1, ioElement.eightByteValuesCount);
 		Assert.AreEqual(1, ioElement.eightByteIdValuePairs.Count);
 
 		Assert.AreEqual(0x4E, ioElement.eightByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }, ioElement.eightByteIdValuePairs[0].Value);
+		Assert.That(ioElement.eightByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 }));
 	}
 
 	[Test, Description("Second sample from Wiki, https://wiki.teltonika-gps.com/view/Codec#Codec_8")]
@@ -104,8 +104,8 @@ public class Codec8DecoderTests
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
 		IOElementCodec8 ioElement = avlDatas[0].GetIOElement();
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x28 }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0x28 }));
 		Assert.AreEqual(40, frame.GetDataFieldLength());
 
 		Assert.AreEqual(37, avlDatas[0].sizeInBytes, "Only AvlDataCodec8 should be 3 bytes less than data field length");
@@ -115,22 +115,22 @@ public class Codec8DecoderTests
 		Assert.AreEqual(1, frame.numberOfData1);
 		Assert.AreEqual(1, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0xF2, 0x2A }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0xF2, 0x2A }));
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD9, 0xAD, 0x80 }, avlDatas[0].timestampBytes);
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD9, 0xAD, 0x80 }));
 		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 5, second: 36, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
 		// GPS element data
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.angleBytes);
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.That(gpsElement.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data
@@ -150,7 +150,7 @@ public class Codec8DecoderTests
 		Assert.AreEqual(1, ioElement.twoByteIdValuePairs.Count);
 
 		Assert.AreEqual(0x42, ioElement.twoByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x5E, 0x10 }, ioElement.twoByteIdValuePairs[0].Value);
+		Assert.That(ioElement.twoByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x5E, 0x10 }));
 
 		Assert.AreEqual(0, ioElement.fourByteValuesCount);
 		Assert.AreEqual(0, ioElement.fourByteIdValuePairs.Count);
@@ -180,8 +180,8 @@ public class Codec8DecoderTests
 		GPSElement gpsElement2 = avlDatas[1].GetGPSElement();
 		IOElementCodec8 ioElement2 = avlDatas[1].GetIOElement();
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x43 }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0x43 }));
 		Assert.AreEqual(67, frame.GetDataFieldLength());
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
@@ -189,24 +189,24 @@ public class Codec8DecoderTests
 		Assert.AreEqual(2, frame.numberOfData1);
 		Assert.AreEqual(2, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x25, 0x2C }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0x25, 0x2C }));
 
 		// First AVL
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0x7B, 0x48 }, avlDatas[0].timestampBytes);
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0x7B, 0x48 }));
 		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 1, second: 1, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
 		// GPS element data of first AVL
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement1.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement1.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement1.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement1.angleBytes);
+		Assert.That(gpsElement1.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement1.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement1.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement1.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement1.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement1.speedBytes);
+		Assert.That(gpsElement1.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.IsFalse(gpsElement1.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data  of first AVL
@@ -230,20 +230,20 @@ public class Codec8DecoderTests
 
 		// Second AVL
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0xC1, 0x98 }, avlDatas[1].timestampBytes);
+		Assert.That(avlDatas[1].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x40, 0xD5, 0xC1, 0x98 }));
 		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 10, minute: 1, second: 19, TimeSpan.Zero), avlDatas[1].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[1].priority);
 
 		// GPS element data of first AVL
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement2.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement2.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement2.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement2.angleBytes);
+		Assert.That(gpsElement2.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement2.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement2.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement2.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement2.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement2.speedBytes);
+		Assert.That(gpsElement2.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.IsFalse(gpsElement2.IsGPSValid(), "GPS value should be invalid");
 
 		// IO element data  of first AVL
@@ -294,8 +294,8 @@ public class Codec8DecoderTests
 		// Assert
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8, result, $"Expected success, but got: {valueOrError}");	
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0x01, 0xCB }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0x01, 0xCB }));
 		Assert.AreEqual(459, frame.GetDataFieldLength());
 
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
@@ -303,11 +303,11 @@ public class Codec8DecoderTests
 		Assert.AreEqual(4, frame.numberOfData1);
 		Assert.AreEqual(4, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x33, 0x79 }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0x33, 0x79 }));
 
 		// First AVL
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xEB, 0x02 }, avlDatas[0].timestampBytes);
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xEB, 0x02 }));
 		Assert.AreEqual(DateTimeOffset.FromUnixTimeMilliseconds(1528069090050), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
@@ -350,7 +350,7 @@ public class Codec8DecoderTests
 
 		// Second AVL
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xE6, 0xE8 }, avlDatas[1].timestampBytes);
+		Assert.That(avlDatas[1].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x63, 0xC8, 0x03, 0xE6, 0xE8 }));
 		Assert.AreEqual(DateTimeOffset.FromUnixTimeMilliseconds(1528069089000), avlDatas[1].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[1].priority);

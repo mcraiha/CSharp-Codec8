@@ -26,8 +26,8 @@ public class Codec8ExtendedDecoderTests
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
 		IOElementCodec8Extended ioElement = avlDatas[0].GetIOElement();
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x4A }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0x4A }));
 		Assert.AreEqual(74, frame.GetDataFieldLength());
 
 		Assert.AreEqual(71, avlDatas[0].sizeInBytes, "Only AvlDataCodec8Extended should be 3 bytes less than data field length");
@@ -37,53 +37,53 @@ public class Codec8ExtendedDecoderTests
 		Assert.AreEqual(1, frame.numberOfData1);
 		Assert.AreEqual(1, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x29, 0x94 }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0x29, 0x94 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x41, 0x2C, 0xEE, 0x00 }, avlDatas[0].timestampBytes);
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x41, 0x2C, 0xEE, 0x00 }));
 		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 10, hour: 11, minute: 36, second: 32, TimeSpan.Zero), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(1, avlDatas[0].priority);
 
 		// GPS element data
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.angleBytes);
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.That(gpsElement.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		// IO element data
-		CollectionAssert.AreEqual(new byte[] { 0, 1 }, ioElement.eventIoId);
-		CollectionAssert.AreEqual(new byte[] { 0, 5 }, ioElement.totalCount);
+		Assert.That(ioElement.eventIoId, Is.EqualTo(new byte[] { 0, 1 }));
+		Assert.That(ioElement.totalCount, Is.EqualTo(new byte[] { 0, 5 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 1 }, ioElement.oneByteValuesCountBytes);
+		Assert.That(ioElement.oneByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 1 }));
 		Assert.AreEqual(1, ioElement.oneByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 1 }, ioElement.oneByteIdValuePairs[0].Id);
+		Assert.That(ioElement.oneByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 1 }));
 		Assert.AreEqual(0x01, ioElement.oneByteIdValuePairs[0].Value);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 1 }, ioElement.twoByteValuesCountBytes);
+		Assert.That(ioElement.twoByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 1 }));
 		Assert.AreEqual(1, ioElement.twoByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0x11 }, ioElement.twoByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x1D }, ioElement.twoByteIdValuePairs[0].Value);
+		Assert.That(ioElement.twoByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 0x11 }));
+		Assert.That(ioElement.twoByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x1D }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 1 }, ioElement.fourByteValuesCountBytes);
+		Assert.That(ioElement.fourByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 1 }));
 		Assert.AreEqual(1, ioElement.fourByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0x10 }, ioElement.fourByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x01, 0x5E, 0x2C, 0x88 }, ioElement.fourByteIdValuePairs[0].Value);
+		Assert.That(ioElement.fourByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 0x10 }));
+		Assert.That(ioElement.fourByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x01, 0x5E, 0x2C, 0x88 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 2 }, ioElement.eightByteValuesCountBytes);
+		Assert.That(ioElement.eightByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 2 }));
 		Assert.AreEqual(2, ioElement.eightByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0x0B }, ioElement.eightByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x35, 0x44, 0xC8, 0x7A }, ioElement.eightByteIdValuePairs[0].Value);
+		Assert.That(ioElement.eightByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 0x0B }));
+		Assert.That(ioElement.eightByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x35, 0x44, 0xC8, 0x7A }));
 
-        CollectionAssert.AreEqual(new byte[] { 0, 0x0E }, ioElement.eightByteIdValuePairs[1].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x1D, 0xD7, 0xE0, 0x6A }, ioElement.eightByteIdValuePairs[1].Value);
+        Assert.That(ioElement.eightByteIdValuePairs[1].Id, Is.EqualTo(new byte[] { 0, 0x0E }));
+		Assert.That(ioElement.eightByteIdValuePairs[1].Value, Is.EqualTo(new byte[] { 0x00, 0x00, 0x00, 0x00, 0x1D, 0xD7, 0xE0, 0x6A }));
 	}
 
 	[Test, Description("Random input from the internet")]
@@ -103,8 +103,8 @@ public class Codec8ExtendedDecoderTests
 		GPSElement gpsElement = avlDatas[0].GetGPSElement();
 		IOElementCodec8Extended ioElement = avlDatas[0].GetIOElement();
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, frame.preambleBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0x71 }, frame.dataFieldLengthBytes);
+		Assert.That(frame.preambleBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(frame.dataFieldLengthBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0x71 }));
 		Assert.AreEqual(113, frame.GetDataFieldLength());
 
 		Assert.AreEqual(110, avlDatas[0].sizeInBytes, "Only AvlDataCodec8Extended should be 3 bytes less than data field length");
@@ -114,48 +114,48 @@ public class Codec8ExtendedDecoderTests
 		Assert.AreEqual(1, frame.numberOfData1);
 		Assert.AreEqual(1, frame.numberOfData2);
 
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 0xE1, 0xB8 }, frame.crc16);
+		Assert.That(frame.crc16, Is.EqualTo(new byte[] { 0x00, 0x00, 0xE1, 0xB8 }));
 
 		Assert.AreEqual(DateTimeOffset.FromUnixTimeMilliseconds(1545914096000), avlDatas[0].GetTimestamp());
 
 		Assert.AreEqual(2, avlDatas[0].priority);
 
 		// GPS element data
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.longitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0 }, gpsElement.latitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.altitudeBytes);
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.angleBytes);
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		Assert.AreEqual(0, gpsElement.visibleSatellites);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, gpsElement.speedBytes);
+		Assert.That(gpsElement.speedBytes, Is.EqualTo(new byte[] { 0, 0 }));
 
 		// IO element data
-		CollectionAssert.AreEqual(new byte[] { 0, 252 }, ioElement.eventIoId);
-		CollectionAssert.AreEqual(new byte[] { 0, 19 }, ioElement.totalCount);
+		Assert.That(ioElement.eventIoId, Is.EqualTo(new byte[] { 0, 252 }));
+		Assert.That(ioElement.totalCount, Is.EqualTo(new byte[] { 0, 19 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 8 }, ioElement.oneByteValuesCountBytes);
+		Assert.That(ioElement.oneByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 8 }));
 		Assert.AreEqual(8, ioElement.oneByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 239 }, ioElement.oneByteIdValuePairs[0].Id);
+		Assert.That(ioElement.oneByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 239 }));
 		Assert.AreEqual(0, ioElement.oneByteIdValuePairs[0].Value);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 9 }, ioElement.twoByteValuesCountBytes);
+		Assert.That(ioElement.twoByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 9 }));
 		Assert.AreEqual(9, ioElement.twoByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 181 }, ioElement.twoByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00 }, ioElement.twoByteIdValuePairs[0].Value);
+		Assert.That(ioElement.twoByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 181 }));
+		Assert.That(ioElement.twoByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x00 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 2 }, ioElement.fourByteValuesCountBytes);
+		Assert.That(ioElement.fourByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 2 }));
 		Assert.AreEqual(2, ioElement.fourByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 241 }, ioElement.fourByteIdValuePairs[0].Id);
-		CollectionAssert.AreEqual(new byte[] { 0x00, 0x00, 89, 217 }, ioElement.fourByteIdValuePairs[0].Value);
+		Assert.That(ioElement.fourByteIdValuePairs[0].Id, Is.EqualTo(new byte[] { 0, 241 }));
+		Assert.That(ioElement.fourByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x00, 0x00, 89, 217 }));
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, ioElement.eightByteValuesCountBytes);
+		Assert.That(ioElement.eightByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.AreEqual(0, ioElement.eightByteIdValuePairs.Count);
 
-		CollectionAssert.AreEqual(new byte[] { 0, 0 }, ioElement.xByteValuesCountBytes);
+		Assert.That(ioElement.xByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
 		Assert.AreEqual(0, ioElement.xByteIdValuePairs.Count);
 	}
 

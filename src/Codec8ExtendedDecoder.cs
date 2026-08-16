@@ -397,7 +397,7 @@ public static class Codec8ExtendedDecoder
 	{
 		if (string.IsNullOrEmpty(hexadecimal))
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 
 		hexadecimal = hexadecimal.Replace("-", "");
@@ -410,7 +410,7 @@ public static class Codec8ExtendedDecoder
 
 		if (hexadecimal.Length % 2 == 1)
 		{
-			return (GenericDecodeResult.OddNumberOfHexValues, $"Input has odd number of hex values");
+			return (GenericDecodeResult.OddNumberOfHexValues, "Input has odd number of hex values");
 		}
 
 		ReadOnlySpan<char> chars = hexadecimal;
@@ -435,7 +435,7 @@ public static class Codec8ExtendedDecoder
 	{
 		if (bytes.Length < 1)
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 		else if (bytes.Length < minimalAVLPacketSizeInBytesAmount)
 		{

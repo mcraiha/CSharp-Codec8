@@ -131,7 +131,7 @@ public static class Codec8UdpDecoder
 	{
 		if (string.IsNullOrEmpty(hexadecimal))
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 
 		hexadecimal = hexadecimal.Replace("-", "");
@@ -144,7 +144,7 @@ public static class Codec8UdpDecoder
 
 		if (hexadecimal.Length % 2 == 1)
 		{
-			return (GenericDecodeResult.OddNumberOfHexValues, $"Input has odd number of hex values");
+			return (GenericDecodeResult.OddNumberOfHexValues, "Input has odd number of hex values");
 		}
 
 		ReadOnlySpan<char> chars = hexadecimal;
@@ -169,7 +169,7 @@ public static class Codec8UdpDecoder
 	{
 		if (bytes.Length < 1)
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 
 		int currentIndex = 0;
@@ -262,7 +262,7 @@ public static class Codec8ExtendedUdpDecoder
 	{
 		if (string.IsNullOrEmpty(hexadecimal))
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 
 		hexadecimal = hexadecimal.Replace("-", "");
@@ -275,7 +275,7 @@ public static class Codec8ExtendedUdpDecoder
 
 		if (hexadecimal.Length % 2 == 1)
 		{
-			return (GenericDecodeResult.OddNumberOfHexValues, $"Input has odd number of hex values");
+			return (GenericDecodeResult.OddNumberOfHexValues, "Input has odd number of hex values");
 		}
 
 		ReadOnlySpan<char> chars = hexadecimal;
@@ -300,7 +300,7 @@ public static class Codec8ExtendedUdpDecoder
 	{
 		if (bytes.Length < 1)
 		{
-			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
 		}
 
 		int currentIndex = 0;

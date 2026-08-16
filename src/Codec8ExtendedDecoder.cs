@@ -378,6 +378,11 @@ public static class Codec8ExtendedDecoder
 	public const byte codec8ExtendedId = 0x8E;
 
 	/// <summary>
+	/// Specification says "minimum AVL record size is 45 bytes (all IO elements disabled)"
+	/// </summary>
+	public const int minimalAVLPacketSizeInBytesAmount = 45;
+
+	/// <summary>
 	/// Valid priority values
 	/// </summary>
 	/// <returns></returns>
@@ -431,6 +436,10 @@ public static class Codec8ExtendedDecoder
 		if (bytes.Length < 1)
 		{
 			return (GenericDecodeResult.InputNullOrEmpty, $"Input is null or empty");
+		}
+		else if (bytes.Length < minimalAVLPacketSizeInBytesAmount)
+		{
+			return (GenericDecodeResult.InputNotEnoughBytes, $"Input has {bytes.Length} bytes of data, but minimum allowed is {minimalAVLPacketSizeInBytesAmount}");
 		}
 
 		int currentIndex = 0;

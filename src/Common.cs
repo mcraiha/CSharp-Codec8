@@ -94,7 +94,12 @@ public enum GenericDecodeResult
 	/// <summary>
 	/// Crc values don't match
 	/// </summary>
-	CrcMismatch
+	CrcMismatch,
+
+	/// <summary>
+	/// Input does not contain minimun amount of required bytes
+	/// </summary>
+	InputNotEnoughBytes
 }
 
 /// <summary>

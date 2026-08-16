@@ -1,7 +1,5 @@
 namespace tests;
 
-#pragma warning disable NUnit2005
-#pragma warning disable NUnit2049
 public class Codec8DecoderTests
 {
 	[SetUp]

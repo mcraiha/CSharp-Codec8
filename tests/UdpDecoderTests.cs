@@ -74,7 +74,7 @@ public class Codec8UdpDecoderTests
 		Assert.That(ioElement.twoByteIdValuePairs[0].Value, Is.EqualTo(new byte[] { 0x5D, 0xBC }));
 	}
 
-	[Test, Description("First sample from GitHub, https://github.com/alim-zanibekov/teltonika/blob/1465a609effa2716b015afb3ebfe279213663b46/teltonika_test.go#L383")]
+	[Test, Description("Second sample from GitHub, https://github.com/alim-zanibekov/teltonika/blob/1465a609effa2716b015afb3ebfe279213663b46/teltonika_test.go#L383")]
 	public void DecodeSecondExampleCodec8UdpTest()
 	{
 		// Arrange
@@ -147,6 +147,70 @@ public class Codec8UdpDecoderTests
 		Assert.AreEqual(0, ioElement.eightByteIdValuePairs.Count);
 	}
 
+	[Test, Description("Third sample is handcrafted")]
+	public void DecodeThirdExampleCodec8UdpTest()
+	{
+		// Arrange
+		string input = "0036CAFE0106000F33353230393330383634303336353508010000016B4F815B310100000000000000000000000000000000000000000001";
+
+		// Act
+		(GenericDecodeResult result, object valueOrError) = Codec8UdpDecoder.ParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8Udp, result, $"Expected success, but got: {valueOrError}");
+
+		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrError;
+
+		Assert.AreEqual(54, header.packetLengthInBytes);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
+		Assert.AreEqual(1, header.notUsableByte);
+
+		Assert.AreEqual(6, avlDataEncapsulated.avlPacketId);
+		Assert.AreEqual(15, avlDataEncapsulated.imeiLengthInBytes);
+		Assert.AreEqual("352093086403655", avlDataEncapsulated.GetImei());
+
+		IReadOnlyList<AvlDataCodec8> avlDatas = frame.GetAvlDatas();
+		GPSElement gpsElement = avlDatas[0].GetGPSElement();
+		IOElementCodec8 ioElement = avlDatas[0].GetIOElement();
+
+		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
+
+		Assert.AreEqual(1, frame.numberOfData1);
+		Assert.AreEqual(1, frame.numberOfData2);
+
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x4F, 0x81, 0x5B, 0x31 }));
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 13, hour: 6, minute: 23, second: 26, millisecond: 1, TimeSpan.Zero), avlDatas[0].GetTimestamp());
+
+		Assert.AreEqual(1, avlDatas[0].priority);
+
+		// GPS element data
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new  byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
+
+		Assert.AreEqual(0, gpsElement.visibleSatellites);
+
+		Assert.That(gpsElement.speedBytes, Is.EqualTo( new byte[] { 0, 0 }));
+		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
+
+		// IO element data
+		Assert.AreEqual(0, ioElement.eventIoId);
+		Assert.AreEqual(0, ioElement.totalCount);
+
+		Assert.AreEqual(0, ioElement.oneByteValuesCount);
+		Assert.AreEqual(0, ioElement.oneByteIdValuePairs.Count);
+
+		Assert.AreEqual(0, ioElement.twoByteValuesCount);
+		Assert.AreEqual(0, ioElement.twoByteIdValuePairs.Count);
+
+		Assert.AreEqual(0, ioElement.fourByteValuesCount);
+		Assert.AreEqual(0, ioElement.fourByteIdValuePairs.Count);
+
+		Assert.AreEqual(0, ioElement.eightByteValuesCount);
+		Assert.AreEqual(0, ioElement.eightByteIdValuePairs.Count);
+	}
+
 	[Test, Description("Invalid inputs")]
 	public void DecodeInvalidCodec8UdpTest()
 	{
@@ -154,6 +218,7 @@ public class Codec8UdpDecoderTests
 		List<(GenericDecodeResult expectedResult, string input)> invalids = new List<(GenericDecodeResult result, string input)>()
 		{
 			(GenericDecodeResult.InputNullOrEmpty, ""),
+			(GenericDecodeResult.InputNotEnoughBytes, "0031CAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000001000001"),
 			(GenericDecodeResult.ContainsNonHexValues, "003DCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC0000H1"),
 			(GenericDecodeResult.OddNumberOfHexValues, "003DCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC0000011"),
 			(GenericDecodeResult.PacketLengthMismatch, "003FCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC000001"),
@@ -334,6 +399,70 @@ public class Codec8ExtendedUdpDecoderTests
 		Assert.AreEqual(0, ioElement.eightByteIdValuePairs.Count);
 	}
 
+	[Test, Description("Third sample is handcrafted")]
+	public void DecodeThirdExampleCodec8ExtendedUdpTest()
+	{
+		// Arrange
+		string input = "003ECAFE0107000F3335323039333038363430333635358E010000016B4F831C6801000000000000000000000000000000000C00000000000000000000000001";
+
+		// Act
+		(GenericDecodeResult result, object valueOrError) = Codec8ExtendedUdpDecoder.ParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(GenericDecodeResult.SuccessCodec8ExtendedUdp, result, $"Expected success, but got: {valueOrError}");
+
+		(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrError;
+
+		Assert.AreEqual(62, header.packetLengthInBytes);
+		Assert.AreEqual(65226, header.GetPacketIdAsUshort());
+		Assert.AreEqual(1, header.notUsableByte);
+
+		Assert.AreEqual(7, avlDataEncapsulated.avlPacketId);
+		Assert.AreEqual(15, avlDataEncapsulated.imeiLengthInBytes);
+		Assert.AreEqual("352093086403655", avlDataEncapsulated.GetImei());
+
+		IReadOnlyList<AvlDataCodec8Extended> avlDatas = frame.GetAvlDatas();
+		GPSElement gpsElement = avlDatas[0].GetGPSElement();
+		IOElementCodec8Extended ioElement = avlDatas[0].GetIOElement();
+
+		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 extended");
+
+		Assert.AreEqual(1, frame.numberOfData1);
+		Assert.AreEqual(1, frame.numberOfData2);
+
+		Assert.That(avlDatas[0].timestampBytes, Is.EqualTo(new byte[] { 0x00, 0x00, 0x01, 0x6B, 0x4F, 0x83, 0x1C, 0x68 }));
+		Assert.AreEqual(new DateTimeOffset (year: 2019, month: 6, day: 13, hour: 6, minute: 25, second: 21, millisecond: 0, TimeSpan.Zero), avlDatas[0].GetTimestamp());
+
+		Assert.AreEqual(1, avlDatas[0].priority);
+
+		// GPS element data
+		Assert.That(gpsElement.longitudeBytes, Is.EqualTo(new  byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.latitudeBytes, Is.EqualTo(new byte[] { 0, 0, 0, 0 }));
+		Assert.That(gpsElement.altitudeBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.That(gpsElement.angleBytes, Is.EqualTo(new byte[] { 0, 0 }));
+
+		Assert.AreEqual(0, gpsElement.visibleSatellites);
+
+		Assert.That(gpsElement.speedBytes, Is.EqualTo( new byte[] { 0, 0 }));
+		Assert.IsFalse(gpsElement.IsGPSValid(), "GPS value should be invalid");
+
+		// IO element data
+		Assert.AreEqual(new byte[] { 0, 12 }, ioElement.eventIoId);
+		Assert.AreEqual(new byte[] { 0, 0 }, ioElement.totalCount);
+
+		Assert.That(ioElement.oneByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.AreEqual(0, ioElement.oneByteIdValuePairs.Count);
+
+		Assert.That(ioElement.twoByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.AreEqual(0, ioElement.twoByteIdValuePairs.Count);
+
+		Assert.That(ioElement.fourByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.AreEqual(0, ioElement.fourByteIdValuePairs.Count);
+
+		Assert.That(ioElement.eightByteValuesCountBytes, Is.EqualTo(new byte[] { 0, 0 }));
+		Assert.AreEqual(0, ioElement.eightByteIdValuePairs.Count);
+	}
+
 	[Test, Description("Invalid inputs")]
 	public void DecodeInvalidCodec8ExtendedUdpTest()
 	{
@@ -341,6 +470,7 @@ public class Codec8ExtendedUdpDecoderTests
 		List<(GenericDecodeResult expectedResult, string input)> invalids = new List<(GenericDecodeResult result, string input)>()
 		{
 			(GenericDecodeResult.InputNullOrEmpty, ""),
+			(GenericDecodeResult.InputNotEnoughBytes, "003DCAFE0107000F3335323039333038363430333635358E010000016B4F831C6801000000000000000000000000000000000C000000000000000000000001"),
 			(GenericDecodeResult.ContainsNonHexValues, "005FCAFE0107000F3335323039333038363430333635358E010000016B4F831C680100000000000000000000000000000000010005000100010100010011009D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A0000H1"),
 			(GenericDecodeResult.OddNumberOfHexValues, "005FCAFE0107000F3335323039333038363430333635358E010000016B4F831C680100000000000000000000000000000000010005000100010100010011009D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A0000011"),
 			(GenericDecodeResult.PacketLengthMismatch, "006FCAFE0107000F3335323039333038363430333635358E010000016B4F831C680100000000000000000000000000000000010005000100010100010011009D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A000001"),

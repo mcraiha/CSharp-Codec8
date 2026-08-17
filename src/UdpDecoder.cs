@@ -123,6 +123,11 @@ public static class Codec8UdpDecoder
 	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
+	/// Hand counted, 5 bytes for UDP channel header, 18 bytes for AVL Packet Header and 33 bytes of AVL Data Array
+	/// </summary>
+	public const int minimalUDPPacketSizeInBytesAmount = 5 + 18 + 33;
+
+	/// <summary>
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8FrameNoCRC tuple from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string (e.g. 003DCAFE0105 ... or 00-3D-CA-FE-01-05 ...)</param>
@@ -170,6 +175,10 @@ public static class Codec8UdpDecoder
 		if (bytes.Length < 1)
 		{
 			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
+		}
+		else if (bytes.Length < minimalUDPPacketSizeInBytesAmount)
+		{
+			return (GenericDecodeResult.InputNotEnoughBytes, $"Input has {bytes.Length} bytes of data, but minimum allowed is {minimalUDPPacketSizeInBytesAmount}");
 		}
 
 		int currentIndex = 0;
@@ -254,6 +263,11 @@ public static class Codec8ExtendedUdpDecoder
 	public static readonly FrozenSet<byte> validPriorities = new HashSet<byte>(){ 0, 1, 2 }.ToFrozenSet();
 
 	/// <summary>
+	/// Hand counted, 5 bytes for UDP channel header, 18 bytes for AVL Packet Header and 41 bytes of AVL Data Array
+	/// </summary>
+	public const int minimalUDPPacketSizeInBytesAmount = 5 + 18 + 41;
+
+	/// <summary>
 	/// Try to parse UdpChannelHeader + AvlDataEncapsulated + Codec8ExtendedFrameNoCRC tuple from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string</param>
@@ -301,6 +315,10 @@ public static class Codec8ExtendedUdpDecoder
 		if (bytes.Length < 1)
 		{
 			return (GenericDecodeResult.InputNullOrEmpty, "Input is null or empty");
+		}
+		else if (bytes.Length < minimalUDPPacketSizeInBytesAmount)
+		{
+			return (GenericDecodeResult.InputNotEnoughBytes, $"Input has {bytes.Length} bytes of data, but minimum allowed is {minimalUDPPacketSizeInBytesAmount}");
 		}
 
 		int currentIndex = 0;

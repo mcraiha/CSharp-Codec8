@@ -1,4 +1,4 @@
-## Version 0.9.6 (released 2026-08-17)
+## Version 0.9.7 (released 2026-08-17)
 - Add some minimum length checks
 
 ## Version 0.9.5 (released 2026-03-30)

@@ -103,6 +103,85 @@ public enum GenericDecodeResult
 }
 
 /// <summary>
+/// Possible parse error
+/// </summary>
+/// <remarks>
+/// Do NOT trust on order or values of these because they might change during updates
+/// </remarks>
+public enum ParseError
+{
+	/// <summary>
+	/// Decode failed, input is null or empty
+	/// </summary>
+	InputNullOrEmpty,
+
+	/// <summary>
+	/// Decode failed, input has non hex value(s)
+	/// </summary>
+	ContainsNonHexValues,
+
+	/// <summary>
+	/// Decode failed, input has odd number of hex values
+	/// </summary>
+	OddNumberOfHexValues,
+
+	/// <summary>
+	/// UDP packet length does not match to given data
+	/// </summary>
+	PacketLengthMismatch,
+
+	/// <summary>
+	/// Decode failed, wrong preamble (only for TCP decoding)
+	/// </summary>
+	WrongPreamble,
+
+	/// <summary>
+	/// Incorrect IMEI length
+	/// </summary>
+	WrongImeiLength,
+
+	/// <summary>
+	/// IMEI contains non-number characters
+	/// </summary>
+	ImeiContainsNonNumbers,
+
+	/// <summary>
+	/// Data Field Length is too big
+	/// </summary>
+	DataFieldLengthTooBig,
+
+	/// <summary>
+	/// Decode failed, incorrect codec id
+	/// </summary>
+	IncorrectCodecId,
+
+	/// <summary>
+	/// Decode failed, incorrect priority value
+	/// </summary>
+	IncorrectPriority,
+
+	/// <summary>
+	/// Decode failed, number of data values don't match
+	/// </summary>
+	NumberOfDataMismatch,
+
+	/// <summary>
+	/// Data field amount of bytes do not contain needed amount of data elements 
+	/// </summary>
+	DataFieldLengthAndNumberOfDataMismatch,
+
+	/// <summary>
+	/// Crc values don't match
+	/// </summary>
+	CrcMismatch,
+
+	/// <summary>
+	/// Input does not contain minimun amount of required bytes
+	/// </summary>
+	InputNotEnoughBytes
+}
+
+/// <summary>
 /// GPS Element
 /// </summary>
 public sealed class GPSElement
@@ -267,16 +346,106 @@ public sealed class GPSElement
 	}
 }
 
+#if NET11_0_OR_GREATER
+
+/// <summary>
+/// Info about parse error
+/// </summary>
+/// <param name="error">ParseError enum</param>
+/// <param name="errorText">Possible error text</param>
+public record ParseErrorInfo(ParseError error, string errorText);
+
+/// <summary>
+/// Valid parse result from Codec8 UDP message
+/// </summary>
+/// <param name="udpChannelHeader">UdpChannelHeader</param>
+/// <param name="avlDataEncapsulated">AvlDataEncapsulated</param>
+/// <param name="frame">Codec8FrameNoCRC</param>
+public record Codec8Udp(UdpChannelHeader udpChannelHeader, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame);
+
+/// <summary>
+/// Valid parse result from Codec8 Extended UDP message
+/// </summary>
+/// <param name="udpChannelHeader">UdpChannelHeader</param>
+/// <param name="avlDataEncapsulated">AvlDataEncapsulated</param>
+/// <param name="frame">Codec8ExtendedFrameNoCRC</param>
+public record Codec8ExtendedUdp(UdpChannelHeader udpChannelHeader, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame);
+
+/// <summary>
+/// Generic parse result
+/// </summary>
+public union GenericParseResult(Codec8Frame, Codec8ExtendedFrame, Codec8Udp, Codec8ExtendedUdp, ParseErrorInfo);
+
+#endif // NET11_0_OR_GREATER
+
 /// <summary>
 /// Generic decoder, for cases when you do not know the encoding
 /// </summary>
 public static class GenericDecoder
 {
+	#if NET11_0_OR_GREATER
+
 	/// <summary>
-	/// Try to parse Codec8Frame or Codec8ExtendedFrame from given hexadecimal string
+	/// Try to parse Codec8Frame, Codec8ExtendedFrame, Codec8FrameNoCRC or Codec8ExtendedFrameNoCRC from given hexadecimal string
 	/// </summary>
 	/// <param name="hexadecimal">Hexadecimal input string</param>
-	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>Codec8Frame</c>, <c>Codec8ExtendedFrame</c>, <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8ExtendedFrameNoCRC</c> tuple or error string</returns>
+	/// <returns>Union of GenericParseResult</returns>
+	public static GenericParseResult GenericParseHexadecimalString(string hexadecimal)
+	{
+		// TCP ones always start with Zero bytes
+		if (hexadecimal.StartsWith("00000000", StringComparison.Ordinal))
+		{
+			(GenericDecodeResult resultTCP, object valueOrErrorTCP) = Codec8Decoder.ParseHexadecimalString(hexadecimal);
+			if (resultTCP == GenericDecodeResult.SuccessCodec8)
+			{
+				return (Codec8Frame)valueOrErrorTCP;
+			}
+			else if (resultTCP == GenericDecodeResult.IncorrectCodecId)
+			{
+				(resultTCP, valueOrErrorTCP) = Codec8ExtendedDecoder.ParseHexadecimalString(hexadecimal);
+				if (resultTCP == GenericDecodeResult.SuccessCodec8Extended)
+				{
+					return (Codec8ExtendedFrame)valueOrErrorTCP;
+				}
+			}
+
+			return new ParseErrorInfo(GenericDecodeResultToParseError(resultTCP), (string)valueOrErrorTCP);
+		}
+
+		// Maybe UDP?
+		(GenericDecodeResult resultUDP, object valueOrErrorUDP) = Codec8UdpDecoder.ParseHexadecimalString(hexadecimal);
+		if (resultUDP == GenericDecodeResult.SuccessCodec8Udp)
+		{
+			(UdpChannelHeader udpChannelHeader, AvlDataEncapsulated avlDataEncapsulated, Codec8FrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8FrameNoCRC c))valueOrErrorUDP;
+			return new Codec8Udp(udpChannelHeader, avlDataEncapsulated, frame);
+		}
+		else if (resultUDP == GenericDecodeResult.IncorrectCodecId)
+		{
+			(resultUDP, valueOrErrorUDP) = Codec8ExtendedUdpDecoder.ParseHexadecimalString(hexadecimal);
+			if (resultUDP == GenericDecodeResult.SuccessCodec8ExtendedUdp)
+			{
+				(UdpChannelHeader header, AvlDataEncapsulated avlDataEncapsulated, Codec8ExtendedFrameNoCRC frame) = ((UdpChannelHeader a, AvlDataEncapsulated b, Codec8ExtendedFrameNoCRC c))valueOrErrorUDP;
+				return new Codec8ExtendedUdp(header, avlDataEncapsulated, frame);
+			}
+		}
+
+		return new ParseErrorInfo(GenericDecodeResultToParseError(resultUDP), (string)valueOrErrorUDP);
+	}
+
+	private static ParseError GenericDecodeResultToParseError(GenericDecodeResult input)
+	{
+		int intValue = (int)input - (int)GenericDecodeResult.InputNullOrEmpty;
+		return (ParseError)intValue;
+	}
+
+	#endif // NET11_0_OR_GREATER
+
+	/// <summary>
+	/// Try to parse compatible structure from given hexadecimal string
+	/// </summary>
+	/// <remarks>This method will be dropped when .NET 10 support ends! Use <c>GenericParseHexadecimalString</c> if you want to be future-proof</remarks>
+	/// <param name="hexadecimal">Hexadecimal input string</param>
+	/// <returns>GenericDecodeResult to indicate if parse was success, and valueOrError that contains either <c>Codec8Frame</c>, <c>Codec8ExtendedFrame</c>, <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8FrameNoCRC</c> tuple, <c>UdpChannelHeader</c> + <c>AvlDataEncapsulated</c> + <c>Codec8ExtendedFrameNoCRC</c> tuple or error string</returns>
 	public static (GenericDecodeResult result, object valueOrError) ParseHexadecimalString(string hexadecimal)
 	{
 		// TCP ones always start with Zero bytes

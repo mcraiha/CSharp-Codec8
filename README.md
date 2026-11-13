@@ -92,6 +92,27 @@ else
 }
 ```
 
+or if your target is .NET 11 or newer
+```csharp
+using Codec8;
+
+{
+    string input = "000000000000004A8E010000016B412CEE000100000000000000000000000000000000010005000100010100010011001D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A00000100002994";
+    GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(input.Replace("-", string.Empty));
+    HandleGenericParseResult(result);
+}
+
+private static int HandleGenericParseResult(GenericParseResult result) => result switch
+{
+    // Your code goes here
+    Codec8Frame frame => HandleCodec8Frame(frame),
+    Codec8ExtendedFrame frameExtended => HandleCodec8ExtendedFrame(frameExtended),
+    Codec8Udp udp => HandleCodec8Udp(udp),
+    Codec8ExtendedUdp udpExtended => HandleCodec8ExtendedUdp(udpExtended),
+    ParseErrorInfo error => HandleParseError(error),
+};
+```
+
 ## How to use CLI
 
 Just input the hex as parameter, e.g.

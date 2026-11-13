@@ -1,3 +1,8 @@
+## Version 1.0.0 (released 2026-11-13)
+- Support .NET 11
+- Drop .NET 8 support
+- Added `GenericParseHexadecimalString` method that uses Union
+
 ## Version 0.9.7 (released 2026-08-17)
 - Add some minimum length checks
 

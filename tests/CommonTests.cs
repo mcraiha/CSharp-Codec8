@@ -37,7 +37,7 @@ public class GenericDecoderTests
 		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
 	}
 
-	[Test, Description("Check that Codec8 decoding works")]
+	[Test, Description("Check that Codec8 UDP decoding works")]
 	public void DecodeCodec8UdpTest()
 	{
 		// Arrange
@@ -52,7 +52,7 @@ public class GenericDecoderTests
 		Assert.AreEqual(0x08, frame.codecId, "Should be Codec8");
 	}
 
-	[Test, Description("Check that Codec8 Extended decoding works")]
+	[Test, Description("Check that Codec8 Extended UDP decoding works")]
 	public void DecodeCodec8ExtendedUdpTest()
 	{
 		// Arrange
@@ -65,6 +65,90 @@ public class GenericDecoderTests
 		// Assert
 		Assert.AreEqual(GenericDecodeResult.SuccessCodec8ExtendedUdp, result, $"Expected success, but got: {valueOrError}");
 		Assert.AreEqual(0x8E, frame.codecId, "Should be Codec8 Extended");
+	}
+
+	[Test, Description("Check that Codec8 decoding works with generic union decoder")]
+	public void DecodeGenericCodec8TcpTest()
+	{
+		// Arrange
+		string input = "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF";
+
+		// Act
+		GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(typeof(Codec8Frame), result.Value.GetType(), $"Expected Codec8Frame, but got: {result.Value.GetType()}");
+		Assert.AreEqual(0x08, ((Codec8Frame)result.Value).codecId, "Should be Codec8");
+	}
+
+	[Test, Description("Check that Codec8 Extended decoding works with generic union decoder")]
+	public void DecodeGenericCodec8ExtendedTcpTest()
+	{
+		// Arrange
+		string input = "000000000000004A8E010000016B412CEE000100000000000000000000000000000000010005000100010100010011001D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A00000100002994";
+
+		// Act
+		GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(typeof(Codec8ExtendedFrame), result.Value.GetType(), $"Expected Codec8ExtendedFrame, but got: {result.Value.GetType()}");
+		Assert.AreEqual(0x8E, ((Codec8ExtendedFrame)result.Value).codecId, "Should be Codec8 Extended");
+	}
+
+	[Test, Description("Check that Codec8 UDP decoding works with generic union decoder")]
+	public void DecodeGenericCodec8UdpTest()
+	{
+		// Arrange
+		string input = "003DCAFE0105000F33353230393330383634303336353508010000016B4F815B30010000000000000000000000000000000103021503010101425DBC000001";
+
+		// Act
+		GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(typeof(Codec8Udp), result.Value.GetType(), $"Expected Codec8Udp, but got: {result.Value.GetType()}");
+		Assert.AreEqual(0x08, ((Codec8Udp)result.Value).frame.codecId, "Should be Codec8");
+	}
+
+	[Test, Description("Check that Codec8 Extended UDP decoding works with generic union decoder")]
+	public void DecodeGenericCodec8ExtendedUdpTest()
+	{
+		// Arrange
+		string input = "005FCAFE0107000F3335323039333038363430333635358E010000016B4F831C680100000000000000000000000000000000010005000100010100010011009D00010010015E2C880002000B000000003544C87A000E000000001DD7E06A000001";
+
+		// Act
+		GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(input);
+
+		// Assert
+		Assert.AreEqual(typeof(Codec8ExtendedUdp), result.Value.GetType(), $"Expected Codec8ExtendedUdp, but got: {result.Value.GetType()}");
+		Assert.AreEqual(0x8E, ((Codec8ExtendedUdp)result.Value).frame.codecId, "Should be Codec8 Extended");
+	}
+
+	[Test, Description("Invalid inputs work with generic union decoder")]
+	public void DecodeGenericInvalidCodec8Test()
+	{
+		// Arrange
+		List<(GenericParseResult expectedResult, string input)> invalids = new List<(GenericParseResult result, string input)>()
+		{
+			(new ParseErrorInfo(ParseError.InputNullOrEmpty, "Input is null or empty"), ""),
+			(new ParseErrorInfo(ParseError.InputNotEnoughBytes, "Input has 44 bytes of data, but minimum allowed is 45"), "000000000000002108010000016B40D8EA3001000000000000000000000000000000010000000000010000C7"),
+			(new ParseErrorInfo(ParseError.ContainsNonHexValues, "Input contains non-hexadecimal char 'G' at pos 131"), "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CG"),
+			(new ParseErrorInfo(ParseError.OddNumberOfHexValues, "Input has odd number of hex values"), "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF1"),
+			(new ParseErrorInfo(ParseError.DataFieldLengthTooBig, "Datafield says there should be 54 bytes, but not that many bytes exist"), "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7"),
+			(new ParseErrorInfo(ParseError.IncorrectCodecId, "Expected 8E as codec ID, but got 09 instead"), "000000000000003609010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
+			(new ParseErrorInfo(ParseError.IncorrectPriority, "Priority value 3 is not valid"), "000000000000003608010000016B40D8EA30030000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7CF"),
+			(new ParseErrorInfo(ParseError.NumberOfDataMismatch, "Mismatch in number of data values: 1 vs. 2"), "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),
+			(new ParseErrorInfo(ParseError.DataFieldLengthAndNumberOfDataMismatch, "Cannot find 2 elements from given data field that is 54 bytes, count is: 1"), "000000000000003608020000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000020000C7CF"),
+			(new ParseErrorInfo(ParseError.CrcMismatch, "Mismatch in CRC: 0000C7CF vs. 0000C7DF"), "000000000000003608010000016B40D8EA30010000000000000000000000000000000105021503010101425E0F01F10000601A014E0000000000000000010000C7DF"),
+		};
+
+		// Act
+
+		// Assert
+		foreach (var pair in invalids)
+		{
+			GenericParseResult result = GenericDecoder.GenericParseHexadecimalString(pair.input);
+			Assert.AreEqual(pair.expectedResult, result, $"{pair.expectedResult.Value} vs. {result.Value.ToString()}");
+		}
 	}
 
 	[Test, Description("Check that hex detection works correctly")]
